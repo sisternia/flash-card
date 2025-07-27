@@ -1,0 +1,81 @@
+.jp-bg {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #f8edeb 0%, #f9dcc4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container-jp {
+  background: #fff;
+  border: 2px solid #e63946;
+  border-radius: 16px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  box-shadow: 0 4px 24px rgba(230,57,70,0.08);
+  min-width: 320px;
+  font-family: 'Noto Sans JP', 'Sawarabi Mincho', Arial, sans-serif;
+}
+
+.login-container-jp h2 {
+  color: #e63946;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.login-container-jp label {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #22223b;
+  font-size: 1rem;
+}
+
+.login-container-jp input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid #bfc0c0;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border 0.2s;
+}
+
+.login-container-jp input:focus {
+  border: 1.5px solid #e63946;
+  outline: none;
+}
+
+.login-container-jp button {
+  width: 100%;
+  background: #e63946;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem;
+  font-size: 1.1rem;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-container-jp button:hover {
+  background: #ba1b1d;
+}
+
+.jp-link {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.jp-link a {
+  color: #4a4e69;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.jp-link a:hover {
+  color: #e63946;
+} 

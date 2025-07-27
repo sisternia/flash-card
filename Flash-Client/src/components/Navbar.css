@@ -1,0 +1,42 @@
+.navbar-jp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border-bottom: 3px solid #e63946;
+  padding: 0.5rem 2rem;
+  font-family: 'Noto Sans JP', 'Sawarabi Mincho', Arial, sans-serif;
+  box-shadow: 0 2px 8px rgba(230,57,70,0.05);
+}
+
+.navbar-logo {
+  font-size: 1.5rem;
+  color: #e63946;
+  font-weight: bold;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-links a, .navbar-links button {
+  margin-left: 1.2rem;
+  text-decoration: none;
+  color: #22223b;
+  font-size: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+  font-family: inherit;
+}
+
+.navbar-links a:hover, .navbar-links button:hover {
+  color: #e63946;
+}
+
+.navbar-user {
+  margin-left: 1.2rem;
+  color: #4a4e69;
+  font-style: italic;
+} 

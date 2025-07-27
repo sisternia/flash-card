@@ -1,0 +1,195 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Ẩn scroll dọc */
+}
+
+.home-bg-jp {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #f8edeb 0%, #f9dcc4 100%);
+  padding: 2rem 0;
+  font-family: 'Noto Sans JP', 'Sawarabi Mincho', Arial, sans-serif;
+}
+
+.home-header-jp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+}
+
+.home-header-jp h2 {
+  color: #e63946;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.jp-btn-main {
+  background: #e63946;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.jp-btn-main:hover {
+  background: #ba1b1d;
+}
+
+.flashcard-set-list-jp {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.flashcard-set-jp {
+  background: #fff;
+  border: 2px solid #e63946;
+  border-radius: 16px;
+  padding: 1.5rem 1.2rem;
+  min-width: 220px;
+  flex: 1 1 220px;
+  box-shadow: 0 4px 24px rgba(230,57,70,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.flashcard-set-jp h3 {
+  color: #22223b;
+  margin-bottom: 0.5rem;
+}
+
+.flashcard-set-jp p {
+  color: #4a4e69;
+  margin-bottom: 1rem;
+}
+
+.jp-btn-link {
+  color: #e63946;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.jp-btn-link:hover {
+  color: #ba1b1d;
+}
+
+.home-quizlet-bg {
+  height: 100vh; /* Đảm bảo chiều cao toàn màn hình */
+  background: url('../assets/background_home.jpg') center center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Sans JP', 'Sawarabi Mincho', Arial, sans-serif;
+}
+
+.home-quizlet-container {
+  display: flex;
+  width: 90vw;
+  max-width: 1100px;
+  height: 70vh; /* Fix chiều cao để không vượt quá màn hình */
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px #3b4cca22;
+  overflow: hidden;
+}
+
+.home-quizlet-left {
+  flex: 1.1;
+  background: #3b4cca;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px; /* Giảm padding để tránh overflow */
+  box-sizing: border-box;
+}
+
+.home-quizlet-title {
+  font-size: 2.3rem; /* Giảm chút kích thước */
+  font-weight: bold;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.home-quizlet-desc {
+  font-size: 1.1rem;
+  margin-bottom: 24px;
+}
+
+.home-quizlet-btn {
+  background: #ffce00;
+  color: #22223b;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px #22223b22;
+  transition: background 0.2s, color 0.2s;
+}
+
+.home-quizlet-btn:hover {
+  background: #ffd84d;
+  color: #3b4cca;
+}
+
+.home-quizlet-info {
+  display: flex;
+  flex-wrap: wrap; /* Để tránh vượt chiều ngang */
+  gap: 12px;
+  font-size: 0.95rem;
+  opacity: 0.92;
+}
+
+.home-quizlet-right {
+  flex: 1;
+  background: #f6f7fb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.home-quizlet-img {
+  width: 280px; /* Giảm chút kích thước ảnh */
+  max-width: 90%;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 4px 24px #3b4cca33);
+}
+
+.home-quizlet-img-desc {
+  color: #3b4cca;
+  font-size: 1rem;
+  text-align: center;
+  font-style: italic;
+}
+
+@media (max-width: 900px) {
+  .home-quizlet-container {
+    flex-direction: column;
+    height: 100vh; /* Vẫn full màn hình nhưng không tràn */
+  }
+  .home-quizlet-left, .home-quizlet-right {
+    padding: 20px;
+    border-radius: 0;
+  }
+  .home-quizlet-img {
+    width: 200px;
+  }
+}

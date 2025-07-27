@@ -1,0 +1,81 @@
+.setdetail-bg-jp {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #f8edeb 0%, #f9dcc4 100%);
+  padding: 2rem 0;
+  font-family: 'Noto Sans JP', 'Sawarabi Mincho', Arial, sans-serif;
+}
+
+.setdetail-header-jp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+}
+
+.setdetail-header-jp h2 {
+  color: #e63946;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.word-list-jp {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.word-card-jp {
+  background: #fff;
+  border: 2px solid #4a4e69;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  min-width: 180px;
+  flex: 1 1 180px;
+  box-shadow: 0 2px 12px rgba(74,78,105,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  transition: background 0.2s, border 0.2s;
+}
+
+.word-card-jp.learned {
+  background: #f9dcc4;
+  border: 2px solid #e63946;
+}
+
+.word-front {
+  font-size: 1.2rem;
+  color: #22223b;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+.word-back {
+  color: #4a4e69;
+  margin-bottom: 0.8rem;
+}
+
+.jp-btn-learned {
+  background: #e63946;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.word-card-jp.learned .jp-btn-learned {
+  background: #4a4e69;
+}
+
+.jp-btn-learned:hover {
+  background: #ba1b1d;
+} 

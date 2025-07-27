@@ -1,0 +1,166 @@
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(180deg, #fff 0%, #ff6f91 100%);
+}
+
+.dashboard-sidebar {
+  width: 38%;
+  background: transparent;
+  border-right: 1px solid #e0e0e0;
+  padding: 32px 16px;
+  box-sizing: border-box;
+  position: relative;
+  padding-top: 56px; /* Đẩy nội dung xuống để tránh đè lên navbar */
+}
+
+.dashboard-main {
+  width: 70%;
+  padding: 32px 24px;
+  background: #fafbfc;
+  box-sizing: border-box;
+}
+
+.flashcard-set-list, .flashcard-list {
+  margin-top: 24px;
+}
+
+.add-set-btn {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+.add-set-btn:hover {
+  background: #1565c0;
+}
+
+.back-btn {
+  border: 2px solid #e63946;
+  background: #fff;
+  color: #22223b;
+  border-radius: 24px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.back-btn:hover:not(:disabled) {
+  color: #e63946;
+  border-color: #ba1b1d;
+}
+
+/* Navbar button hover chỉ đổi màu chữ */
+.jp-btn-main {
+  background: #fff;
+  color: #e63946;
+  border: 2px solid #e63946;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.jp-btn-main:hover:not(:disabled) {
+  color: #ba1b1d;
+  border-color: #ba1b1d;
+  background: #fff;
+}
+
+.jp-btn-main.navbar-btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+} 
+
+.modal-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.18);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-add-set {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px #e6394633;
+  padding: 2.2rem 2.5rem 1.5rem 2.5rem;
+  min-width: 320px;
+  max-width: 95vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: popup-fade-in 0.25s;
+}
+@keyframes popup-fade-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+} 
+
+.flashcard-set-list-jp {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.flashcard-set-jp {
+  background: #fff;
+  border: 2px solid #e63946;
+  border-radius: 16px;
+  padding: 1.2rem 1rem;
+  min-width: 0;
+  box-shadow: 0 4px 24px rgba(230,57,70,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  cursor: pointer;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.flashcard-set-jp.selected {
+  border: 2.5px solid #3b4cca;
+  box-shadow: 0 4px 24px #3b4cca22;
+}
+
+@media (max-width: 900px) {
+  .flashcard-set-list-jp {
+    grid-template-columns: 1fr;
+  }
+} 
+
+.set-menu-option {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.18s, color 0.18s;
+}
+.set-menu-option:hover {
+  background: #f6f7fb;
+  color: #22223b !important;
+}
+.set-menu {
+  min-width: 140px;
+  box-shadow: 0 4px 16px #e6394633;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 4px 0;
+}
+.set-menu-btn:focus {
+  outline: none;
+} 

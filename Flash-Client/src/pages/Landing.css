@@ -1,0 +1,191 @@
+.mascot-bg-jp {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(90deg, #fffbe6 0%, #ffe066 100%);
+  overflow: hidden;
+}
+.mascot-bg-jp .mascot-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 1;
+  pointer-events: none;
+  padding-right: 6vw; /* Dịch sang phải một chút */
+}
+.mascot-bg-jp .mascot-overlay img {
+  width: 59.85vw; /* Nhỏ lại 10% từ 66.5vw */
+  max-width: 769.5px; /* Nhỏ lại 10% từ 855px */
+  min-width: 273.6px; /* Nhỏ lại 10% từ 304px */
+  opacity: 0.92;
+  filter: drop-shadow(0 12px 48px rgba(230,57,70,0.22)) drop-shadow(0 2px 8px #fffbe6);
+  object-fit: contain;
+  background: none;
+  border-radius: 32px;
+  transition: opacity 0.3s, filter 0.3s;
+}
+.landing-bg-jp, .mascot-bg-jp > * {
+  position: relative;
+  z-index: 2;
+}
+
+.landing-header-jp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem 1rem 3rem;
+}
+
+.brand-logo-jp {
+  font-size: 2rem;
+  color: #f9a825;
+  font-weight: bold;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.landing-btn-go {
+  background: #43a047;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 22px;
+  padding: 0.7rem 1.6rem;
+  font-size: 1.1rem;
+  text-decoration: none;
+  box-shadow: 0 4px 0 #2e7d32;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.landing-btn-go:hover {
+  background: #2e7d32;
+  box-shadow: 0 2px 0 #2e7d32;
+}
+
+.landing-content-jp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 3rem 0 3rem;
+}
+
+.landing-left-jp {
+  flex: 1;
+}
+
+.landing-left-jp h1 {
+  font-size: 2.8rem;
+  color: #6d4c41;
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+}
+
+.landing-desc-jp {
+  font-size: 1.2rem;
+  color: #a67c52;
+  margin-bottom: 2.2rem;
+}
+
+.landing-btn-group-jp {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  max-width: 320px;
+}
+
+.landing-btn-main {
+  background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 22px;
+  padding: 0.9rem 0;
+  font-size: 1.1rem;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 4px 0 #388e3c;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.landing-btn-main:hover {
+  background: #388e3c;
+  box-shadow: 0 2px 0 #388e3c;
+}
+
+.landing-btn-sub {
+  background: #fff;
+  color: #43a047;
+  font-weight: bold;
+  border: none;
+  border-radius: 22px;
+  padding: 0.9rem 0;
+  font-size: 1.1rem;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 2px 0 #bdbdbd;
+  transition: background 0.2s, color 0.2s;
+}
+
+.landing-btn-sub:hover {
+  background: #f1f8e9;
+  color: #388e3c;
+}
+
+.landing-right-jp {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.landing-mascot-jp {
+  max-width: 350px;
+  width: 220px;
+  height: 220px;
+  margin-right: 2rem;
+  border-radius: 24px; /* Bo tròn nhẹ 4 góc */
+  box-shadow: 0 6px 32px rgba(230,57,70,0.13);
+  border: 5px solid #fffbe6;
+  object-fit: contain; /* Đảm bảo không bị cắt hình */
+  background: #fffbe6; /* Nền nhẹ nếu ảnh không vuông */
+  animation: mascot-bounce 2.2s infinite cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+@keyframes mascot-bounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  40% {
+    transform: translateY(-18px) scale(1.08);
+  }
+  60% {
+    transform: translateY(-8px) scale(1.04);
+  }
+  80% {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+@media (max-width: 900px) {
+  .landing-content-jp {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2rem 1rem 0 1rem;
+  }
+  .landing-right-jp {
+    justify-content: center;
+    margin-top: 2rem;
+    width: 100%;
+  }
+  .landing-mascot-jp {
+    margin-right: 0;
+    max-width: 220px;
+  }
+} 

@@ -1,0 +1,57 @@
+.register-container-jp {
+  background: #fff;
+  border: 2px solid #22223b;
+  border-radius: 16px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  box-shadow: 0 4px 24px rgba(34,34,59,0.08);
+  min-width: 320px;
+  font-family: 'Noto Sans JP', 'Sawarabi Mincho', Arial, sans-serif;
+}
+
+.register-container-jp h2 {
+  color: #22223b;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.register-container-jp label {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #22223b;
+  font-size: 1rem;
+}
+
+.register-container-jp input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid #bfc0c0;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border 0.2s;
+}
+
+.register-container-jp input:focus {
+  border: 1.5px solid #22223b;
+  outline: none;
+}
+
+.register-container-jp button {
+  width: 100%;
+  background: #22223b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem;
+  font-size: 1.1rem;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.register-container-jp button:hover {
+  background: #4a4e69;
+} 
