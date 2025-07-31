@@ -72,6 +72,11 @@ const Profile = ({ user, onClose }) => {
         <h2 className="profile-title">Thông tin tài khoản</h2>
         {userData ? (
           <>
+            <div className="floating-label" style={{ marginBottom: '16px' }}>
+              <input type="text" value={userData.email} disabled />
+              <label>Email</label>
+            </div>
+
             <div className="profile-info-row">
               <div className="floating-label">
                 <input type="text" value={userData.username} disabled />
@@ -86,6 +91,7 @@ const Profile = ({ user, onClose }) => {
                 <label>Ngày tạo tài khoản</label>
               </div>
             </div>
+
             <div className="profile-buttons">
               <button className="jp-btn-main" onClick={() => setShowRenameModal(true)}>Đổi tên</button>
               <button className="jp-btn-main" onClick={() => setShowPasswordModal(true)}>Đổi mật khẩu</button>
