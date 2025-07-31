@@ -1,22 +1,43 @@
 const db = require('../db');
 
-// Kiểm tra user tồn tại
-const findUserByUsername = (username) => {
-  return db.query('SELECT * FROM users WHERE username = ?', [username]);
+// Kiểm tra user tồn tại bằng email
+const findUserByEmail = (email) => {
+  return db.query('SELECT * FROM users WHERE email = ?', [email]);
 };
 
 // Tạo user mới
-const createUser = (username, hashedPassword) => {
-  return db.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword]);
+const createUser = (email, username, hashedPassword) => {
+  return db.query('INSERT INTO users (email, username, password) VALUES (?, ?, ?)', [email, username, hashedPassword]);
 };
 
-// Lấy id của user theo username
-const getUserIdByUsername = (username) => {
-  return db.query('SELECT id FROM users WHERE username = ?', [username]);
+// Lấy id của user theo email
+const getUserIdByEmail = (email) => {
+  return db.query('SELECT id FROM users WHERE email = ?', [email]);
+};
+
+// Lấy user theo id
+const getUserById = (id) => {
+  return db.query('SELECT id, email, username, created_at FROM users WHERE id = ?', [id]);
+};
+
+const updateUsername = (id, newUsername) => {
+  return db.query('UPDATE users SET username = ? WHERE id = ?', [newUsername, id]);
+};
+
+const updatePassword = (id, hashedPassword) => {
+  return db.query('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, id]);
+};
+
+const getPasswordById = (id) => {
+  return db.query('SELECT password FROM users WHERE id = ?', [id]);
 };
 
 module.exports = {
-  findUserByUsername,
+  findUserByEmail,
   createUser,
-  getUserIdByUsername,
+  getUserIdByEmail,
+  getUserById,
+  updateUsername,
+  updatePassword,
+  getPasswordById,
 };
