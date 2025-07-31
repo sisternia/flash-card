@@ -10,11 +10,11 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
+const authRoutes = require('./routes/auth.routes');
+const flashcardRoutes = require('./routes/flashcard.routes');
 
-const flashcardSetsRoutes = require('./routes/flashcardSets');
-app.use('/api/sets', flashcardSetsRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/sets', flashcardRoutes);
 
 const PORT = process.env.PORT || 5000;
 
@@ -24,4 +24,4 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-}); 
+});
