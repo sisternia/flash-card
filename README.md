@@ -1,5 +1,6 @@
 Dẫn tới \Flash Card\Flash-Client nhập những lệnh sau:
 - Cài đặt thư viện
+
   npm i
 - Chạy dự án
   npm run start
