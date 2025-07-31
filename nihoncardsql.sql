@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th7 23, 2025 lúc 09:49 AM
--- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.0.30
+-- Thời gian đã tạo: Th7 31, 2025 lúc 04:59 AM
+-- Phiên bản máy phục vụ: 10.4.28-MariaDB
+-- Phiên bản PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `nihoncard`
+-- Cơ sở dữ liệu: `nihoncardsql`
 --
 
 -- --------------------------------------------------------
@@ -61,8 +61,23 @@ CREATE TABLE `flashcards` (
   `front` varchar(255) NOT NULL,
   `back` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `image_url` varchar(255) DEFAULT NULL
+  `image_url` varchar(255) DEFAULT NULL,
+  `phonetic` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `flashcards`
+--
+
+INSERT INTO `flashcards` (`id`, `set_id`, `front`, `back`, `created_at`, `image_url`, `phonetic`) VALUES
+(6, 10, 'ブドウ', 'Trái Nhooo\"s', '2025-07-29 08:21:00', '/uploads/40e826b52eb2e31e5485e3aefa3a9cde', 'budou'),
+(12, 10, '進捗', 'Tiến độ', '2025-07-29 08:46:45', 'https://base.vn/wp-content/uploads/2024/08/cac-buoc-quan-ly-tien-do-du-an-1024x570.webp', 'しんちょく'),
+(13, 10, 'バナナ', 'Chuoi', '2025-07-29 08:58:57', '/uploads/71afb7f30ffd7b29a1568a525f6d4686', 'banana'),
+(14, 11, '父', 'Bố', '2025-07-29 09:02:54', 'https://img.lovepik.com/free-png/20211213/lovepik-dad-holding-a-baby-png-image_401563239_wh1200.png', 'chichi'),
+(15, 11, '母', 'Me', '2025-07-29 09:03:47', 'https://img.lovepik.com/free-png/20210919/lovepik-a-mother-with-a-child-in-her-arms-png-image_400990936_wh1200.png', 'はは'),
+(16, 11, '妹', 'Em gái', '2025-07-29 09:06:00', 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh8WLIHeOoTRED1cVbnC37Waogcnb8JohHaOcgzFfZmKAmqpMcjxgVCtYXlthqQFi1IHaYVceRAd3JYupBS-XiXQ9G7Nn79utT_j1lEegzeB2knIRvS1wkjJIGNpILGwk17OuH-cBXkWSs_FIY6-vBoL_td-LiklncBV9F6gWmb1yTCoqHYyWfechp9WBk/s453-r', 'いもうと'),
+(17, 10, 'スイカ', 'dua hau', '2025-07-30 02:58:19', '/uploads/1f414c65f1addb1057a01c515f7c9b80', 'すいか'),
+(20, 13, '母', 'Mẹ', '2025-07-31 02:59:09', '/uploads/614f26e4327f4ddea6bc606c04c99d59', 'はは');
 
 -- --------------------------------------------------------
 
@@ -83,11 +98,9 @@ CREATE TABLE `flashcard_sets` (
 --
 
 INSERT INTO `flashcard_sets` (`id`, `user_id`, `title`, `description`, `created_at`) VALUES
-(4, 8, '人生', '人生の語彙', '2025-07-17 13:51:28'),
-(5, 8, '果物', 'いろいろな果物の言葉を勉強しましょう　！！', '2025-07-17 13:55:42'),
-(6, 3, 'PHONG CẢNH', 'Từ vựng về Phong cảnh', '2025-07-17 15:47:50'),
-(7, 3, 'ffff', NULL, '2025-07-21 03:44:39'),
-(8, 3, 'hghjgh', NULL, '2025-07-22 04:07:55');
+(10, 3, '果物ss', 'いろいろな果物の言葉を勉強しよう！！！：））sss', '2025-07-29 08:14:45'),
+(11, 3, '家族', '家族の語彙を勉強しよう', '2025-07-29 09:00:06'),
+(13, 10, '家族', NULL, '2025-07-31 02:58:51');
 
 -- --------------------------------------------------------
 
@@ -145,7 +158,9 @@ INSERT INTO `users` (`id`, `username`, `password`, `created_at`) VALUES
 (5, 'win', '$2b$10$ssyORmymodtEYX6BRMM2O.fUOWSeRwE8O.d2RvO7Y.QdfDwPLMdnW', '2025-07-14 11:04:38'),
 (6, 'hoctap1', '$2b$10$R2OEKaL5f7MpLYx9I8AZfOveGDKpKGNEx6ksLZ7z9TvCIMn98Wbea', '2025-07-14 11:15:14'),
 (7, 'viii', '$2b$10$HKmArk5TCBWigq8m2hWyFegfaN2gJFWJggiEBU3US5ngM6WZYskXa', '2025-07-17 10:02:03'),
-(8, 'minh', '$2b$10$b4maqsX.GBrQ12i9Gu/xwO8cShpdtGcy7HCyUI7elzir1zpoLhNrC', '2025-07-17 13:50:27');
+(8, 'minh', '$2b$10$b4maqsX.GBrQ12i9Gu/xwO8cShpdtGcy7HCyUI7elzir1zpoLhNrC', '2025-07-17 13:50:27'),
+(9, 'duham', '$2b$10$WJ5xWiFxqG7iCEKVjhGJKOp5eTHPnIPG0gRk4FdZRwOlNRw/wNjKa', '2025-07-29 10:02:19'),
+(10, 'vu', '$2b$10$.gKsoyARei.iHr2BUUh/4OPc2UVcFz71wm58TQiuGI/ciK7asFlgO', '2025-07-31 02:53:34');
 
 -- --------------------------------------------------------
 
@@ -245,13 +260,13 @@ ALTER TABLE `drag_drop_games`
 -- AUTO_INCREMENT cho bảng `flashcards`
 --
 ALTER TABLE `flashcards`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT cho bảng `flashcard_sets`
 --
 ALTER TABLE `flashcard_sets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT cho bảng `quiz_results`
@@ -269,7 +284,7 @@ ALTER TABLE `study_stats`
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT cho bảng `user_flashcard_status`
