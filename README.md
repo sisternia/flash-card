@@ -8,7 +8,7 @@ Dẫn tới \Flash Card\Flash-Client nhập những lệnh sau:
   npm run start
    ```
 
-Dẫn tới \Flash Card\Flash-Server\db.js
+Dẫn tới \Flash Card\Flash-Server
 - Cài đặt thư viện
   ```bash
   npm i
