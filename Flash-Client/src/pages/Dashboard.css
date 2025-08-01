@@ -171,7 +171,6 @@
   background: linear-gradient(180deg, #fff 0%, #ff6f91 100%);
 }
 .dashboard-col {
-  flex: 1 1 0;
   min-width: 0;
   box-sizing: border-box;
   padding: 32px 18px;
@@ -180,17 +179,24 @@
   align-items: stretch;
 }
 .dashboard-sidebar {
+  flex: 1;
+  min-width: 300px;
   border-right: 1.5px solid #e0e0e0;
   background: transparent;
   position: relative;
   padding-top: 56px;
 }
 .dashboard-vocab {
-  background: #fafbfc;
+  flex: 2.5;
+  min-width: 360px;
+  background: #ffffff;
   border-right: 1.5px solid #e0e0e0;
   overflow-y: auto;
+  
 }
 .dashboard-quiz {
+  flex: 1;
+  min-width: 300px;
   background: #f8edeb;
   display: flex;
   flex-direction: column;
@@ -253,6 +259,14 @@
   color: #4a4e69;
   font-style: normal;
 }
+.vocab-status-controls {
+  display: flex;
+  flex-direction: row; /* Ensure horizontal alignment */
+  align-items: center; /* Vertically center items */
+  justify-content: center;
+  flex-grow: 1;
+  gap: 8px; /* Add some space between the status and checkbox */
+}
 .vocab-status {
   background: #f6f7fb;
   color: #3b4cca;
@@ -273,7 +287,7 @@
 }
 .vocab-img {
   height: 96px;
-  width: auto;
+  width: 96px; /* Add fixed width */
   border-radius: 8px;
   margin-left: 18px;
   object-fit: cover;
@@ -410,7 +424,7 @@
     margin-left: 0;
     margin-top: 10px;
     width: 100%;
-    max-width: 220px;
+    width: 200px;
     height: auto;
   }
 } 

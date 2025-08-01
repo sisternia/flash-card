@@ -564,24 +564,33 @@ const Dashboard = () => {
                     <button className="vocab-menu-option" style={{ color: '#e63946' }} onClick={() => handleDeleteVocab(card.id)}>Xóa từ vựng</button>
                   </div>
                 )}
+            
+                {/* Left part: word, phonetic, note */}
                 <div className="vocab-main">
                   <div className="vocab-header-row">
                     <button className="vocab-audio-btn" title="Phát âm" onClick={e => { e.stopPropagation(); speak(card.phonetic || card.front, 'ja-JP'); }}>
                       <span role="img" aria-label="audio">🔊</span>
                     </button>
                     <span className="vocab-word">{card.front}</span>
-                    {card.phonetic && <span className="vocab-phonetic">{card.phonetic}</span>}
-                    <span className={`vocab-status${learnedStatus[card.id] ? ' learned' : ''}`}>{learnedStatus[card.id] ? 'Đã thuộc' : 'Chưa thuộc'}</span>
-                    <input type="checkbox" checked={!!learnedStatus[card.id]} onChange={e => { e.stopPropagation(); handleToggleLearned(card.id); }} style={{ marginLeft: 8, accentColor: '#2ecc40', width: 18, height: 18 }} />
                   </div>
+                  {card.phonetic && <span className="vocab-phonetic">{card.phonetic}</span>}
                   <div className="vocab-note">{card.back}</div>
                 </div>
-                {/* Hiển thị ảnh: ưu tiên URL trước, file sau */}
-                {(card.image_url && card.image_url.startsWith('http')) ? (
-                  <img className="vocab-img" src={card.image_url} alt="minh họa" />
-                ) : card.image_url ? (
-                  <img className="vocab-img" src={`http://localhost:5000${card.image_url}`} alt="minh họa" />
-                ) : null}
+            
+                {/* Middle part: status, checkbox */}
+                <div className="vocab-status-controls">
+                  <span className={`vocab-status${learnedStatus[card.id] ? ' learned' : ''}`}>{learnedStatus[card.id] ? 'Đã thuộc' : 'Chưa thuộc'}</span>
+                  <input type="checkbox" checked={!!learnedStatus[card.id]} onChange={e => { e.stopPropagation(); handleToggleLearned(card.id); }} style={{ accentColor: '#2ecc40', width: 18, height: 18 }} />
+                </div>
+            
+                {/* Right part: image */}
+                {(card.image_url) && (
+                    (card.image_url && card.image_url.startsWith('http')) ? (
+                        <img className="vocab-img" src={card.image_url} alt="minh họa" />
+                    ) : card.image_url ? (
+                        <img className="vocab-img" src={`http://localhost:5000${card.image_url}`} alt="minh họa" />
+                    ) : null
+                )}
               </div>
             ))
           )}
@@ -601,7 +610,7 @@ const Dashboard = () => {
                 {quizFromVocabId && learnedStatus[quizFlashcards[quizIndex].id] && (
                   <div style={{ color: '#2ecc40', fontSize: 13, fontStyle: 'italic', marginTop: 2 }}>Đã thuộc</div>
                 )}
-                {/* Hiển thị ảnh: ưu tiên URL trước, file sau */}
+                {/*   Hiển thị ảnh: ưu tiên URL trước, file sau */}
                 {(quizFlashcards[quizIndex].image_url && quizFlashcards[quizIndex].image_url.startsWith('http')) ? (
                   <img src={quizFlashcards[quizIndex].image_url} alt="minh họa" style={{ height: 140, marginTop: 10, borderRadius: 8, objectFit: 'cover', boxShadow: '0 2px 8px #0002' }} />
                 ) : quizFlashcards[quizIndex].image_url ? (
