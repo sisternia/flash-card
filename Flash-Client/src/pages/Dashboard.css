@@ -259,6 +259,12 @@
   color: #4a4e69;
   font-style: normal;
 }
+.vocab-status-controls {
+  display: flex;
+  flex-direction: row; /* Ensure horizontal alignment */
+  align-items: center; /* Vertically center items */
+  gap: 8px; /* Add some space between the status and checkbox */
+}
 .vocab-status {
   background: #f6f7fb;
   color: #3b4cca;
@@ -416,7 +422,7 @@
     margin-left: 0;
     margin-top: 10px;
     width: 100%;
-    max-width: 220px;
+    width: 200px;
     height: auto;
   }
 } 
