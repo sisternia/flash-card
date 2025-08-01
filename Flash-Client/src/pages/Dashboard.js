@@ -16,6 +16,82 @@ const Dashboard = () => {
   const [errorSets, setErrorSets] = useState('');
   const navigate = useNavigate();
 
+  // page next flashcard set//
+  const [currentPage, setCurrentPage] = useState(1);
+  const [setsPerPage] = useState(4);
+
+  const indexOfLastSet = currentPage * setsPerPage;
+  const indexOfFirstSet = indexOfLastSet - setsPerPage;
+  const currentSets = sets.slice(indexOfFirstSet, indexOfLastSet);
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
+  const renderPagination = () => {
+    const pageCount = Math.ceil(sets.length / setsPerPage);
+    if (pageCount <= 1) return null;
+  
+    const pages = [];
+    
+    // Logic for displaying pages
+    if (pageCount <= 3) {
+      // If 3 or fewer pages, show all
+      for (let i = 1; i <= pageCount; i++) {
+        pages.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={currentPage === i ? 'active' : ''}
+          >
+            {i}
+          </button>
+        );
+      }
+    } else {
+      // More than 3 pages
+      if (currentPage > 1) {
+        pages.push(
+          <button key="prev" className="prev-page" onClick={() => paginate(currentPage - 1)}>
+            Prev
+          </button>
+        );
+      }
+  
+      let startPage;
+      if (currentPage === 1) {
+        startPage = 1;
+      } else if (currentPage === pageCount) {
+        startPage = pageCount - 2;
+      } else {
+        startPage = currentPage -1;
+      }
+  
+      for (let i = 0; i < 3; i++) {
+        if (startPage + i <= pageCount) {
+          pages.push(
+            <button
+              key={startPage + i}
+              onClick={() => paginate(startPage + i)}
+              className={currentPage === startPage + i ? 'active' : ''}
+            >
+              {startPage + i}
+            </button>
+          );
+        }
+      }
+  
+      if (currentPage < pageCount) {
+        pages.push(
+          <button key="last" className="last-page" onClick={() => paginate(pageCount)}>
+            Last
+          </button>
+        );
+      }
+    }
+  
+    return <>{pages}</>;
+  };
+
+
   // Lấy user_id từ localStorage
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const user_id = user?.id;
@@ -386,7 +462,7 @@ const Dashboard = () => {
           <div style={{ marginTop: 32, color: '#e63946' }}>{errorSets}</div>
         ) : (
           <div className="flashcard-set-list-jp">
-            {sets.map(set => (
+            {currentSets.map(set => (
               <div
                   className={`flashcard-set-jp${set.id === selectedSetId ? ' selected' : ''}`}
                   key={set.id}
@@ -423,6 +499,9 @@ const Dashboard = () => {
             ))}
           </div>
         )}
+        <div className='pagination'>
+          {renderPagination()}
+        </div>
         {showAddSet && (
           <div className="modal-bg">
             <div className="modal-add-set">
@@ -630,4 +709,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;
