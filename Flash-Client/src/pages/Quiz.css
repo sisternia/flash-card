@@ -14,7 +14,9 @@
   padding: 2.5rem 2rem 2rem 2rem;
   box-shadow: 0 4px 24px rgba(230,57,70,0.08);
   min-width: 340px;
-  max-width: 400px;
+  max-width: 800px;
+  width: 90%;
+  text-align: center;
 }
 
 .quiz-container-jp h2 {
@@ -23,6 +25,100 @@
   font-weight: bold;
   letter-spacing: 2px;
   text-align: center;
+}
+
+.decks-container {
+  min-height: 300px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-items: center;
+  align-items: center;
+}
+
+.flashcard-set-jp {
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.flashcard-set-jp:only-child {
+  grid-column: 1 / -1;
+  width: calc(50% - 10px);
+  justify-self: center;
+}
+
+.pagination-jp {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination-jp button {
+  border: none;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+}
+
+.pagination-jp .page-number-jp {
+  background-color: #e63946;
+  color: white;
+}
+
+.pagination-jp .page-number-jp:hover {
+  background-color: #2ecc40;
+  color: white;
+}
+
+.pagination-jp .last-page-jp {
+  background-color: #e63946;
+  color: white;
+}
+
+.pagination-jp .last-page-jp:hover {
+  background-color: #2ecc40;
+}
+
+.pagination-jp .current-page-jp {
+  background-color: #2ecc40;
+  color: white;
+  font-weight: bold;
+}
+
+.pagination-jp button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #888;
+}
+
+.flashcard-set-jp {
+  min-width: 220px;
+  cursor: pointer;
+  border: 2px solid #3b4cca;
+  border-radius: 16px;
+  padding: 18px;
+  background: #fff;
+  box-shadow: 0 2px 8px #3b4cca11;
+  display: inline-block;
+  margin: 10px;
+  vertical-align: top;
+}
+
+.flashcard-set-jp h3 {
+  color: #3b4cca;
+  margin-bottom: 8px;
+  white-space: nowrap;
+}
+
+.flashcard-set-jp div {
+  color: #4a4e69;
+  font-size: 15px;
+  white-space: nowrap;
 }
 
 .quiz-card-jp {
