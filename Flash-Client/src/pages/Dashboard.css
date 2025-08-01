@@ -186,9 +186,10 @@
   padding-top: 56px;
 }
 .dashboard-vocab {
-  background: #fafbfc;
+  background: #fafafb;
   border-right: 1.5px solid #e0e0e0;
   overflow-y: auto;
+  max-width: 2000px;
 }
 .dashboard-quiz {
   background: #f8edeb;
