@@ -374,7 +374,7 @@ const Dashboard = () => {
           <h2>Bộ Flashcard của bạn</h2>
           <button
             className="jp-btn-main"
-            style={{ marginBottom: 12, width: '100%' }}
+            style={{ marginBottom: 12,marginLeft:20, width: '80%' }}
             onClick={() => setShowAddSet(true)}
           >
             + Tạo bộ mới
@@ -388,32 +388,38 @@ const Dashboard = () => {
           <div className="flashcard-set-list-jp">
             {sets.map(set => (
               <div
-                className={`flashcard-set-jp${set.id === selectedSetId ? ' selected' : ''}`}
-                key={set.id}
-                onClick={() => setSelectedSetId(set.id)}
-                style={{ cursor: 'pointer', position: 'relative' }}
+                  className={`flashcard-set-jp${set.id === selectedSetId ? ' selected' : ''}`}
+                  key={set.id}
+                  onClick={() => setSelectedSetId(set.id)}
               >
-                {/* Nút 3 chấm dọc */}
-                <button
-                  className="set-menu-btn"
-                  style={{ position: 'absolute', top: 8, right: 8, background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}
-                  onClick={e => { e.stopPropagation(); setMenuOpenId(set.id === menuOpenId ? null : set.id); }}
-                  tabIndex={-1}
-                >
-                  <span style={{ fontSize: 22, color: '#e63946', fontWeight: 'bold', letterSpacing: 1 }}>&#8942;</span>
-                </button>
-                {/* Menu option */}
-                {menuOpenId === set.id && (
-                  <div className="set-menu" style={{ position: 'absolute', top: 36, right: 8, background: '#fff', border: '1px solid #eee', borderRadius: 8, boxShadow: '0 4px 16px #e6394633', zIndex: 10, minWidth: 140 }} onClick={e => e.stopPropagation()}>
-                    <button className="set-menu-option" style={{ color: '#3b4cca' }} onClick={() => handleEditSet(set)}>Sửa tên</button>
-                    <button className="set-menu-option" style={{ color: '#ff9800' }} onClick={() => handleEditSet(set)}>Thêm ghi chú</button>
-                    {/* <button className="set-menu-option" style={{ color: '#3b4cca' }} onClick={() => { setMenuOpenId(null); handleShowAddVocab(set.id); }}>Thêm từ vựng</button> */}
-                    <button className="set-menu-option" style={{ color: '#e63946' }} onClick={() => handleDeleteSet(set.id)}>Xóa bộ Flashcard</button>
-                  </div>
-                )}
-                <h3>{set.title}</h3>
-                <p>{set.description}</p>
-              </div>
+            {/* Nút 3 chấm dọc */}
+          <button
+            className="set-menu-btn"
+            onClick={e => {
+            e.stopPropagation();
+            setMenuOpenId(set.id === menuOpenId ? null : set.id);
+        }}
+        tabIndex={-1}
+        >
+          <span>&#8942;</span>
+      </button>
+
+            {/*     Menu option */}
+        {menuOpenId === set.id && (
+          <div className="set-menu" onClick={e => e.stopPropagation()}>
+            <button className="set-menu-option blue" onClick={() => handleEditSet(set)}>Sửa tên</button>
+            <button className="set-menu-option orange" onClick={() => handleEditSet(set)}>Thêm ghi chú</button>
+            <button className="set-menu-option red" onClick={() => handleDeleteSet(set.id)}>Xóa bộ Flashcard</button>
+          </div>
+  )       }
+
+        <div className="set-content">
+          <h3>{set.title}</h3>
+          <p>{set.description}</p>
+        </div>
+      </div>
+
+              
             ))}
           </div>
         )}
