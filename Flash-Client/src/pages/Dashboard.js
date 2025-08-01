@@ -610,7 +610,7 @@ const Dashboard = () => {
                 {quizFromVocabId && learnedStatus[quizFlashcards[quizIndex].id] && (
                   <div style={{ color: '#2ecc40', fontSize: 13, fontStyle: 'italic', marginTop: 2 }}>Đã thuộc</div>
                 )}
-                {/* Hiển thị ảnh: ưu tiên URL trước, file sau */}
+                {/*   Hiển thị ảnh: ưu tiên URL trước, file sau */}
                 {(quizFlashcards[quizIndex].image_url && quizFlashcards[quizIndex].image_url.startsWith('http')) ? (
                   <img src={quizFlashcards[quizIndex].image_url} alt="minh họa" style={{ height: 140, marginTop: 10, borderRadius: 8, objectFit: 'cover', boxShadow: '0 2px 8px #0002' }} />
                 ) : quizFlashcards[quizIndex].image_url ? (
