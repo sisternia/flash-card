@@ -171,7 +171,6 @@
   background: linear-gradient(180deg, #fff 0%, #ff6f91 100%);
 }
 .dashboard-col {
-  flex: 1 1 0;
   min-width: 0;
   box-sizing: border-box;
   padding: 32px 18px;
@@ -180,18 +179,24 @@
   align-items: stretch;
 }
 .dashboard-sidebar {
+  flex: 1;
+  min-width: 300px;
   border-right: 1.5px solid #e0e0e0;
   background: transparent;
   position: relative;
   padding-top: 56px;
 }
 .dashboard-vocab {
-  background: #fafafb;
+  flex: 2.5;
+  min-width: 360px;
+  background: #ffffff;
   border-right: 1.5px solid #e0e0e0;
   overflow-y: auto;
-  max-width: 2000px;
+  
 }
 .dashboard-quiz {
+  flex: 1;
+  min-width: 300px;
   background: #f8edeb;
   display: flex;
   flex-direction: column;
