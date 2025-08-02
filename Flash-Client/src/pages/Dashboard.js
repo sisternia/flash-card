@@ -18,7 +18,7 @@ const Dashboard = () => {
 
   // page next flashcard set//
   const [currentPage, setCurrentPage] = useState(1);
-  const [setsPerPage] = useState(4);
+  const [setsPerPage] = useState(2);
 
   const indexOfLastSet = currentPage * setsPerPage;
   const indexOfFirstSet = indexOfLastSet - setsPerPage;
@@ -451,7 +451,7 @@ const Dashboard = () => {
           <h2>Bộ Flashcard</h2>
           <button
             className="jp-btn-main"
-            style={{ marginBottom: 12,marginLeft:70, width: '100%', padding: '0.6rem 4.2rem' }}
+            style={{ marginBottom: 12,marginLeft:50, width: '80%', padding: '0.6rem 2.8rem' }}
             onClick={() => setShowAddSet(true)}
           >
             + Tạo bộ mới
