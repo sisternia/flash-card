@@ -77,6 +77,7 @@ const Dashboard = () => {
             </button>
           );
         }
+        
       }
   
       if (currentPage < pageCount) {
@@ -447,10 +448,10 @@ const Dashboard = () => {
           BACK
         </button>
         <div className="home-header-jp" style={{ marginTop: 32 }}>
-          <h2>Bộ Flashcard của bạn</h2>
+          <h2>Bộ Flashcard</h2>
           <button
             className="jp-btn-main"
-            style={{ marginBottom: 12,marginLeft:20, width: '80%' }}
+            style={{ marginBottom: 12,marginLeft:70, width: '100%', padding: '0.6rem 4.2rem' }}
             onClick={() => setShowAddSet(true)}
           >
             + Tạo bộ mới
