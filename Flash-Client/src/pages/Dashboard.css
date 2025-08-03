@@ -1,4 +1,3 @@
-
 .dashboard-container {
   display: flex;
   height: 100vh;
@@ -329,7 +328,9 @@
   flex: 2.5;
   min-width: 360px;
   background: #ffffff;
-  border-right: 1.5px solid #e0e0e0; 
+  border-right: 1.5px solid #e0e0e0;
+  overflow-y: auto;
+  
 }
 .dashboard-quiz {
   flex: 1;
@@ -602,15 +603,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
-  margin-bottom: 100px;
+  margin-top: 24px;
+  margin-bottom: 50px;
 }
 
 .pagination button {
   background: #e63946; /* Red for unselected */
   color: #fff;
   border: none;
-  padding: 16px 16px ;
+  padding: 8px 16px;
   margin: 0 5px;
   cursor: pointer;
   border-radius: 5px;
@@ -644,12 +645,4 @@
 .pagination-ellipsis {
   margin: 0 4px;
   align-self: center;
-}
-
-.vocab-pagination {
-  position: fixed;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-30%);
-  z-index: 1000;
 }

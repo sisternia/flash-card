@@ -16,6 +16,83 @@ const Dashboard = () => {
   const [errorSets, setErrorSets] = useState('');
   const navigate = useNavigate();
 
+  // page next flashcard set//
+  const [currentPage, setCurrentPage] = useState(1);
+  const [setsPerPage] = useState(2);
+
+  const indexOfLastSet = currentPage * setsPerPage;
+  const indexOfFirstSet = indexOfLastSet - setsPerPage;
+  const currentSets = sets.slice(indexOfFirstSet, indexOfLastSet);
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
+  const renderPagination = () => {
+    const pageCount = Math.ceil(sets.length / setsPerPage);
+    if (pageCount <= 1) return null;
+  
+    const pages = [];
+    
+    // Logic for displaying pages
+    if (pageCount <= 3) {
+      // If 3 or fewer pages, show all
+      for (let i = 1; i <= pageCount; i++) {
+        pages.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={currentPage === i ? 'active' : ''}
+          >
+            {i}
+          </button>
+        );
+      }
+    } else {
+      // More than 3 pages
+      if (currentPage > 1) {
+        pages.push(
+          <button key="prev" className="prev-page" onClick={() => paginate(currentPage - 1)}>
+            Prev
+          </button>
+        );
+      }
+  
+      let startPage;
+      if (currentPage === 1) {
+        startPage = 1;
+      } else if (currentPage === pageCount) {
+        startPage = pageCount - 2;
+      } else {
+        startPage = currentPage -1;
+      }
+  
+      for (let i = 0; i < 3; i++) {
+        if (startPage + i <= pageCount) {
+          pages.push(
+            <button
+              key={startPage + i}
+              onClick={() => paginate(startPage + i)}
+              className={currentPage === startPage + i ? 'active' : ''}
+            >
+              {startPage + i}
+            </button>
+          );
+        }
+        
+      }
+  
+      if (currentPage < pageCount) {
+        pages.push(
+          <button key="last" className="last-page" onClick={() => paginate(pageCount)}>
+            Last
+          </button>
+        );
+      }
+    }
+  
+    return <>{pages}</>;
+  };
+
+
   // Lấy user_id từ localStorage
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const user_id = user?.id;
@@ -400,10 +477,10 @@ const Dashboard = () => {
           BACK
         </button>
         <div className="home-header-jp" style={{ marginTop: 32 }}>
-          <h2>Bộ Flashcard của bạn</h2>
+          <h2>Bộ Flashcard</h2>
           <button
             className="jp-btn-main"
-            style={{ marginBottom: 12, width: '100%' }}
+            style={{ marginBottom: 12,marginLeft:15, width: '100%', padding: '0.6rem 1.4rem', fontSize:'0.9rem' }}
             onClick={() => setShowAddSet(true)}
           >
             + Tạo bộ mới
@@ -415,37 +492,46 @@ const Dashboard = () => {
           <div style={{ marginTop: 32, color: '#e63946' }}>{errorSets}</div>
         ) : (
           <div className="flashcard-set-list-jp">
-            {sets.map(set => (
+            {currentSets.map(set => (
               <div
-                className={`flashcard-set-jp${set.id === selectedSetId ? ' selected' : ''}`}
-                key={set.id}
-                onClick={() => setSelectedSetId(set.id)}
-                style={{ cursor: 'pointer', position: 'relative' }}
+                  className={`flashcard-set-jp${set.id === selectedSetId ? ' selected' : ''}`}
+                  key={set.id}
+                  onClick={() => setSelectedSetId(set.id)}
               >
-                {/* Nút 3 chấm dọc */}
-                <button
-                  className="set-menu-btn"
-                  style={{ position: 'absolute', top: 8, right: 8, background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}
-                  onClick={e => { e.stopPropagation(); setMenuOpenId(set.id === menuOpenId ? null : set.id); }}
-                  tabIndex={-1}
-                >
-                  <span style={{ fontSize: 22, color: '#e63946', fontWeight: 'bold', letterSpacing: 1 }}>&#8942;</span>
-                </button>
-                {/* Menu option */}
-                {menuOpenId === set.id && (
-                  <div className="set-menu" style={{ position: 'absolute', top: 36, right: 8, background: '#fff', border: '1px solid #eee', borderRadius: 8, boxShadow: '0 4px 16px #e6394633', zIndex: 10, minWidth: 140 }} onClick={e => e.stopPropagation()}>
-                    <button className="set-menu-option" style={{ color: '#3b4cca' }} onClick={() => handleEditSet(set)}>Sửa tên</button>
-                    <button className="set-menu-option" style={{ color: '#ff9800' }} onClick={() => handleEditSet(set)}>Thêm ghi chú</button>
-                    {/* <button className="set-menu-option" style={{ color: '#3b4cca' }} onClick={() => { setMenuOpenId(null); handleShowAddVocab(set.id); }}>Thêm từ vựng</button> */}
-                    <button className="set-menu-option" style={{ color: '#e63946' }} onClick={() => handleDeleteSet(set.id)}>Xóa bộ Flashcard</button>
-                  </div>
-                )}
-                <h3>{set.title}</h3>
-                <p>{set.description}</p>
-              </div>
+            {/* Nút 3 chấm dọc */}
+          <button
+            className="set-menu-btn"
+            onClick={e => {
+            e.stopPropagation();
+            setMenuOpenId(set.id === menuOpenId ? null : set.id);
+        }}
+        tabIndex={-1}
+        >
+          <span>&#8942;</span>
+      </button>
+
+            {/*     Menu option */}
+        {menuOpenId === set.id && (
+          <div className="set-menu" onClick={e => e.stopPropagation()}>
+            <button className="set-menu-option blue" onClick={() => handleEditSet(set)}>Sửa tên</button>
+            <button className="set-menu-option orange" onClick={() => handleEditSet(set)}>Thêm ghi chú</button>
+            <button className="set-menu-option red" onClick={() => handleDeleteSet(set.id)}>Xóa bộ Flashcard</button>
+          </div>
+  )       }
+
+        <div className="set-content">
+          <h3>{set.title}</h3>
+          <p>{set.description}</p>
+        </div>
+      </div>
+
+              
             ))}
           </div>
         )}
+        <div className='pagination'>
+          {renderPagination()}
+        </div>
         {showAddSet && (
           <div className="modal-bg">
             <div className="modal-add-set">
@@ -664,4 +750,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;
