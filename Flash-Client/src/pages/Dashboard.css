@@ -125,16 +125,17 @@
 
 .flashcard-set-list-jp {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, 260px);
   gap: 16px;
   margin-top: 24px;
   flex-grow: 1; /* Allow it to take available space */
   overflow-y: hidden; /* Enable scrolling for content */
   padding: 0;
+  justify-content: center;
 }
 
 .flashcard-set-jp {
-  height: 170px;
+  height: 165px;
   border: 1px solid #ccc;
   border-radius: 12px;
   padding: 16px;

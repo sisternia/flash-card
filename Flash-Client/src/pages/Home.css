@@ -43,13 +43,7 @@ html, body {
   background: #ba1b1d;
 }
 
-.flashcard-set-list-jp {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
-}
+
 
 .flashcard-set-jp {
   background: #fff;
