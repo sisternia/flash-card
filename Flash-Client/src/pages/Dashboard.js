@@ -147,7 +147,7 @@ const Dashboard = () => {
 
   // State for vocab pagination
   const [currentVocabPage, setCurrentVocabPage] = useState(1);
-  const [vocabsPerPage] = useState(4);
+  const [vocabsPerPage] = useState(3);
 
   const indexOfLastVocab = currentVocabPage * vocabsPerPage;
   const indexOfFirstVocab = indexOfLastVocab - vocabsPerPage;

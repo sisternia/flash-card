@@ -646,9 +646,8 @@
 }
 
 .vocab-pagination {
-  position: fixed;
-  bottom: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
 }
