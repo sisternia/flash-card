@@ -222,6 +222,35 @@ const Dashboard = () => {
   const [loadingFlashcards, setLoadingFlashcards] = useState(false);
   const [errorFlashcards, setErrorFlashcards] = useState('');
 
+  // State for vocab pagination
+  const [currentVocabPage, setCurrentVocabPage] = useState(1);
+  const [vocabsPerPage] = useState(3);
+
+  const indexOfLastVocab = currentVocabPage * vocabsPerPage;
+  const indexOfFirstVocab = indexOfLastVocab - vocabsPerPage;
+  const currentVocabs = flashcards.slice(indexOfFirstVocab, indexOfLastVocab);
+
+  const paginateVocab = pageNumber => setCurrentVocabPage(pageNumber);
+
+  const renderVocabPagination = () => {
+    const pageCount = Math.ceil(flashcards.length / vocabsPerPage);
+    if (pageCount <= 1) return null;
+
+    const pages = [];
+    for (let i = 1; i <= pageCount; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => paginateVocab(i)}
+          className={currentVocabPage === i ? 'active' : ''}
+        >
+          {i}
+        </button>
+      );
+    }
+    return <div className="pagination vocab-pagination">{pages}</div>;
+  };
+
   // State cho quiz flashcard
   const [quizIndex, setQuizIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -451,7 +480,7 @@ const Dashboard = () => {
           <h2>Bộ Flashcard</h2>
           <button
             className="jp-btn-main"
-            style={{ marginBottom: 12,marginLeft:50, width: '80%', padding: '0.6rem 2.8rem' }}
+            style={{ marginBottom: 12,marginLeft:15, width: '100%', padding: '0.6rem 1.4rem', fontSize:'0.9rem' }}
             onClick={() => setShowAddSet(true)}
           >
             + Tạo bộ mới
@@ -638,7 +667,7 @@ const Dashboard = () => {
           ) : flashcards.length === 0 ? (
             <div style={{ color: '#888' }}>Chưa có từ vựng nào trong bộ này.</div>
           ) : (
-            flashcards.map(card => (
+            currentVocabs.map(card => (
               <div className="vocab-item" key={card.id} onClick={() => handleVocabClick(card)} style={{ cursor: learnedStatus[card.id] ? 'pointer' : 'default', position: 'relative' }}>
                 {/* Nút 3 chấm xanh biển */}
                 <button className="vocab-menu-btn" style={{ position: 'absolute', top: 8, left: 8, background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }} onClick={e => handleOpenVocabMenu(card.id, e)}>
@@ -650,28 +679,39 @@ const Dashboard = () => {
                     <button className="vocab-menu-option" style={{ color: '#e63946' }} onClick={() => handleDeleteVocab(card.id)}>Xóa từ vựng</button>
                   </div>
                 )}
+            
+                {/* Left part: word, phonetic, note */}
                 <div className="vocab-main">
                   <div className="vocab-header-row">
                     <button className="vocab-audio-btn" title="Phát âm" onClick={e => { e.stopPropagation(); speak(card.phonetic || card.front, 'ja-JP'); }}>
                       <span role="img" aria-label="audio">🔊</span>
                     </button>
                     <span className="vocab-word">{card.front}</span>
-                    {card.phonetic && <span className="vocab-phonetic">{card.phonetic}</span>}
-                    <span className={`vocab-status${learnedStatus[card.id] ? ' learned' : ''}`}>{learnedStatus[card.id] ? 'Đã thuộc' : 'Chưa thuộc'}</span>
-                    <input type="checkbox" checked={!!learnedStatus[card.id]} onChange={e => { e.stopPropagation(); handleToggleLearned(card.id); }} style={{ marginLeft: 8, accentColor: '#2ecc40', width: 18, height: 18 }} />
                   </div>
+                  {card.phonetic && <span className="vocab-phonetic">{card.phonetic}</span>}
                   <div className="vocab-note">{card.back}</div>
                 </div>
-                {/* Hiển thị ảnh: ưu tiên URL trước, file sau */}
-                {(card.image_url && card.image_url.startsWith('http')) ? (
-                  <img className="vocab-img" src={card.image_url} alt="minh họa" />
-                ) : card.image_url ? (
-                  <img className="vocab-img" src={`http://localhost:5000${card.image_url}`} alt="minh họa" />
-                ) : null}
+            
+                {/* Middle part: status, checkbox */}
+                <div className="vocab-status-controls">
+                  <span className={`vocab-status${learnedStatus[card.id] ? ' learned' : ''}`}>{learnedStatus[card.id] ? 'Đã thuộc' : 'Chưa thuộc'}</span>
+                  <input type="checkbox" checked={!!learnedStatus[card.id]} onChange={e => { e.stopPropagation(); handleToggleLearned(card.id); }} style={{ accentColor: '#2ecc40', width: 18, height: 18 }} />
+                </div>
+            
+                {/* Right part: image */}
+                {(card.image_url) && (
+                    (card.image_url && card.image_url.startsWith('http')) ? (
+                        <img className="vocab-img" src={card.image_url} alt="minh họa" />
+                    ) : card.image_url ? (
+                        <img className="vocab-img" src={`http://localhost:5000${card.image_url}`} alt="minh họa" />
+                    ) : null
+                )}
               </div>
             ))
           )}
         </div>
+        {renderVocabPagination()}
+        
       </section>
       {/* Cột 3: Quiz flashcard */}
       <section className="dashboard-quiz dashboard-col">
@@ -687,7 +727,7 @@ const Dashboard = () => {
                 {quizFromVocabId && learnedStatus[quizFlashcards[quizIndex].id] && (
                   <div style={{ color: '#2ecc40', fontSize: 13, fontStyle: 'italic', marginTop: 2 }}>Đã thuộc</div>
                 )}
-                {/* Hiển thị ảnh: ưu tiên URL trước, file sau */}
+                {/*   Hiển thị ảnh: ưu tiên URL trước, file sau */}
                 {(quizFlashcards[quizIndex].image_url && quizFlashcards[quizIndex].image_url.startsWith('http')) ? (
                   <img src={quizFlashcards[quizIndex].image_url} alt="minh họa" style={{ height: 140, marginTop: 10, borderRadius: 8, objectFit: 'cover', boxShadow: '0 2px 8px #0002' }} />
                 ) : quizFlashcards[quizIndex].image_url ? (

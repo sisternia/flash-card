@@ -125,7 +125,7 @@
 
 .flashcard-set-list-jp {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 260px);
+  grid-template-columns: repeat(auto-fit, 350px);
   gap: 16px;
   margin-top: 24px;
   flex-grow: 1; /* Allow it to take available space */
@@ -136,6 +136,11 @@
 
 .flashcard-set-jp {
   height: 165px;
+  justify-content: center; /* Add this to center the items */
+}
+
+.flashcard-set-jp {
+  height: 155px;
   border: 1px solid #ccc;
   border-radius: 12px;
   padding: 16px;
@@ -152,7 +157,7 @@
 
 .set-menu-btn {
   position: absolute;
-  top: 8px;
+  top: 3px;
   right: 8px;
   background: none;
   border: none;
@@ -169,21 +174,21 @@
 
 .set-menu {
   position: absolute;
-  top: 36px;
+  top: 30px;
   right: 8px;
   background: #fff;
   border: 1px solid #eee;
   border-radius: 8px;
   box-shadow: 0 4px 16px #e6394633;
   z-index: 10;
-  min-width: 140px;
-  padding: 8px 0;
+  min-width: 100px;
+  padding: 6px 0;
 }
 
 .set-menu-option {
   display: block;
   width: 100%;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: none;
   border: none;
   text-align: left;
@@ -241,9 +246,9 @@
 /* ĐƯỜNG KẺ DƯỚI NGẮN – chỉ bên dưới chữ */
 .home-header-jp h2 {
   font-size: 19px;
-  font-weight: 700;
+  font-weight: 1000;
   color: #ff4d6d;
-  line-height: 1.4;
+  line-height: 1.2;
   margin: 0;
   position: relative;
   display: inline-block;
@@ -271,9 +276,10 @@
 
 @media (max-width: 900px) {
   .flashcard-set-list-jp {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 350px);
+    justify-content: center;
   }
-} 
+}  
 
 .set-menu-option {
   display: block;
@@ -308,7 +314,6 @@
   background: linear-gradient(180deg, #fff 0%, #ff6f91 100%);
 }
 .dashboard-col {
-  flex: 1 1 0;
   min-width: 0;
   box-sizing: border-box;
   padding: 32px 18px;
@@ -317,17 +322,24 @@
   align-items: stretch;
 }
 .dashboard-sidebar {
+  flex: 1;
+  min-width: 300px;
   border-right: 1.5px solid #e0e0e0;
   background: transparent;
   position: relative;
   padding-top: 56px;
 }
 .dashboard-vocab {
-  background: #fafbfc;
+  flex: 2.5;
+  min-width: 360px;
+  background: #ffffff;
   border-right: 1.5px solid #e0e0e0;
   overflow-y: auto;
+  
 }
 .dashboard-quiz {
+  flex: 1;
+  min-width: 300px;
   background: #f8edeb;
   display: flex;
   flex-direction: column;
@@ -390,6 +402,14 @@
   color: #4a4e69;
   font-style: normal;
 }
+.vocab-status-controls {
+  display: flex;
+  flex-direction: row; /* Ensure horizontal alignment */
+  align-items: center; /* Vertically center items */
+  justify-content: center;
+  flex-grow: 1;
+  gap: 8px; /* Add some space between the status and checkbox */
+}
 .vocab-status {
   background: #f6f7fb;
   color: #3b4cca;
@@ -410,7 +430,7 @@
 }
 .vocab-img {
   height: 96px;
-  width: auto;
+  width: 96px; /* Add fixed width */
   border-radius: 8px;
   margin-left: 18px;
   object-fit: cover;
@@ -547,7 +567,7 @@
     margin-left: 0;
     margin-top: 10px;
     width: 100%;
-    max-width: 220px;
+    width: 200px;
     height: auto;
   }
 } 
