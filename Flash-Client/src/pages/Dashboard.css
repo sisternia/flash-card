@@ -1,3 +1,4 @@
+
 .dashboard-container {
   display: flex;
   height: 100vh;
@@ -646,8 +647,9 @@
 }
 
 .vocab-pagination {
-  margin-top: auto;
-  display: flex;
-  justify-content: center;
-  padding: 16px 0;
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-30%);
+  z-index: 1000;
 }
