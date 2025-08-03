@@ -145,6 +145,35 @@ const Dashboard = () => {
   const [loadingFlashcards, setLoadingFlashcards] = useState(false);
   const [errorFlashcards, setErrorFlashcards] = useState('');
 
+  // State for vocab pagination
+  const [currentVocabPage, setCurrentVocabPage] = useState(1);
+  const [vocabsPerPage] = useState(4);
+
+  const indexOfLastVocab = currentVocabPage * vocabsPerPage;
+  const indexOfFirstVocab = indexOfLastVocab - vocabsPerPage;
+  const currentVocabs = flashcards.slice(indexOfFirstVocab, indexOfLastVocab);
+
+  const paginateVocab = pageNumber => setCurrentVocabPage(pageNumber);
+
+  const renderVocabPagination = () => {
+    const pageCount = Math.ceil(flashcards.length / vocabsPerPage);
+    if (pageCount <= 1) return null;
+
+    const pages = [];
+    for (let i = 1; i <= pageCount; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => paginateVocab(i)}
+          className={currentVocabPage === i ? 'active' : ''}
+        >
+          {i}
+        </button>
+      );
+    }
+    return <div className="pagination vocab-pagination">{pages}</div>;
+  };
+
   // State cho quiz flashcard
   const [quizIndex, setQuizIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -552,7 +581,7 @@ const Dashboard = () => {
           ) : flashcards.length === 0 ? (
             <div style={{ color: '#888' }}>Chưa có từ vựng nào trong bộ này.</div>
           ) : (
-            flashcards.map(card => (
+            currentVocabs.map(card => (
               <div className="vocab-item" key={card.id} onClick={() => handleVocabClick(card)} style={{ cursor: learnedStatus[card.id] ? 'pointer' : 'default', position: 'relative' }}>
                 {/* Nút 3 chấm xanh biển */}
                 <button className="vocab-menu-btn" style={{ position: 'absolute', top: 8, left: 8, background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }} onClick={e => handleOpenVocabMenu(card.id, e)}>
@@ -595,6 +624,8 @@ const Dashboard = () => {
             ))
           )}
         </div>
+        {renderVocabPagination()}
+        
       </section>
       {/* Cột 3: Quiz flashcard */}
       <section className="dashboard-quiz dashboard-col">

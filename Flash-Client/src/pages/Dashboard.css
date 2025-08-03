@@ -24,6 +24,20 @@
 .flashcard-set-list, .flashcard-list {
   margin-top: 24px;
 }
+.flashcard-set-jp {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* canh giữa theo chiều ngang */
+  justify-content: center; /* canh giữa theo chiều dọc nếu có height cố định */
+  text-align: center;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f5f5f5;
+  min-height: 100px; /* hoặc auto nếu cần */
+  margin-bottom: 16px;
+  position: relative;
+  transition: all 0.2s ease;
+}
 
 .add-set-btn {
   margin-top: 16px;
@@ -51,10 +65,12 @@
   cursor: pointer;
   transition: color 0.2s, border-color 0.2s;
 }
+
 .back-btn:hover:not(:disabled) {
   color: #e63946;
   border-color: #ba1b1d;
 }
+
 
 /* Navbar button hover chỉ đổi màu chữ */
 .jp-btn-main {
@@ -109,24 +125,145 @@
 
 .flashcard-set-list-jp {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, 350px);
+  gap: 16px;
   margin-top: 24px;
+  flex-grow: 1; /* Allow it to take available space */
+  overflow-y: hidden; /* Enable scrolling for content */
+  padding: 0;
+  justify-content: center; /* Add this to center the items */
 }
 
 .flashcard-set-jp {
-  background: #fff;
-  border: 2px solid #e63946;
-  border-radius: 16px;
-  padding: 1.2rem 1rem;
-  min-width: 0;
-  box-shadow: 0 4px 24px rgba(230,57,70,0.08);
+  height: 155px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 16px;
+  background-color: #fdfdfd;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  cursor: pointer;
-  transition: border 0.2s, box-shadow 0.2s;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  box-sizing: border-box; /* Add this */
+  overflow: hidden; /* And this */
 }
+
+
+.set-menu-btn {
+  position: absolute;
+  top: 3px;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.set-menu-btn span {
+  font-size: 22px;
+  color: #e63946;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.set-menu {
+  position: absolute;
+  top: 30px;
+  right: 8px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px #e6394633;
+  z-index: 10;
+  min-width: 100px;
+  padding: 6px 0;
+}
+
+.set-menu-option {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.set-menu-option:hover {
+  background-color: #f5f5f5;
+}
+
+.set-menu-option.blue {
+  color: #3b4cca;
+}
+
+.set-menu-option.orange {
+  color: #ff9800;
+}
+
+.set-menu-option.red {
+  color: #e63946;
+}
+
+.set-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.set-content h3,
+.set-content p {
+  margin: 4px 0;
+  white-space: nowrap; /* Add this */
+  overflow: hidden; /* And this */
+  text-overflow: ellipsis; /* And this */
+  width: 100%; /* And this */
+}
+
+
+.home-header-jp {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  background-color: transparent;
+  padding-bottom: 10px;
+  position: relative;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* ĐƯỜNG KẺ DƯỚI NGẮN – chỉ bên dưới chữ */
+.home-header-jp h2 {
+  font-size: 19px;
+  font-weight: 1000;
+  color: #ff4d6d;
+  line-height: 1.2;
+  margin: 0;
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.home-header-jp h2::after {
+  content: "";
+  display: block;
+  width: 50%;
+  height: 3px;
+  background: linear-gradient(90deg, #ff6a88, #ff99ac);
+  margin-top: 6px;
+  border-radius: 4px;
+}
+
+
+
+
+
 .flashcard-set-jp.selected {
   border: 2.5px solid #3b4cca;
   box-shadow: 0 4px 24px #3b4cca22;
@@ -134,9 +271,10 @@
 
 @media (max-width: 900px) {
   .flashcard-set-list-jp {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 350px);
+    justify-content: center;
   }
-} 
+}  
 
 .set-menu-option {
   display: block;
@@ -190,9 +328,7 @@
   flex: 2.5;
   min-width: 360px;
   background: #ffffff;
-  border-right: 1.5px solid #e0e0e0;
-  overflow-y: auto;
-  
+  border-right: 1.5px solid #e0e0e0; 
 }
 .dashboard-quiz {
   flex: 1;
@@ -460,3 +596,59 @@
   background: #f6f7fb;
   color: #3b4cca !important;
 } 
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
+.pagination button {
+  background: #e63946; /* Red for unselected */
+  color: #fff;
+  border: none;
+  padding: 16px 16px ;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.pagination button:hover {
+  background: #2ecc40; /* Green on hover */
+  transform: translateY(-2px);
+}
+
+.pagination button.active {
+  background: rgb(46, 204, 64); /* Green for selected */
+  color: #fff;
+  border-color: #f69cb1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.pagination button.last-page,
+.pagination button.prev-page {
+  background: #e63946;
+}
+
+.pagination button.last-page:hover,
+.pagination button.prev-page:hover {
+  background: rgb(46, 204, 64);
+}
+
+.pagination-ellipsis {
+  margin: 0 4px;
+  align-self: center;
+}
+
+.vocab-pagination {
+  position: fixed;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
