@@ -451,7 +451,7 @@ const Dashboard = () => {
           <h2>Bộ Flashcard</h2>
           <button
             className="jp-btn-main"
-            style={{ marginBottom: 12,marginLeft:50, width: '80%', padding: '0.6rem 2.8rem' }}
+            style={{ marginBottom: 12,marginLeft:15, width: '100%', padding: '0.6rem 1.4rem', fontSize:'0.9rem' }}
             onClick={() => setShowAddSet(true)}
           >
             + Tạo bộ mới
