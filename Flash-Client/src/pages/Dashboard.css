@@ -131,6 +131,11 @@
   flex-grow: 1; /* Allow it to take available space */
   overflow-y: hidden; /* Enable scrolling for content */
   padding: 0;
+  justify-content: center;
+}
+
+.flashcard-set-jp {
+  height: 165px;
   justify-content: center; /* Add this to center the items */
 }
 
