@@ -16,8 +16,8 @@
     min-width: 360px;
     background: #ffffff;
     border-right: 1.5px solid #e0e0e0;
-    overflow-y: hidden; /* ✅ Ngăn hiện thanh trượt dọc */
-  }  
+    overflow-y: hidden;
+  }
   .vocab-list {
     display: flex;
     flex-direction: column;
