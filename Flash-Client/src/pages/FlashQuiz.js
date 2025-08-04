@@ -13,7 +13,7 @@ const FlashQuiz = ({ flashcards, learnedStatus, quizFromVocabId, quizIndex, isFl
       setQuizIndex(0);
       setIsFlipped(false);
     } else {
-      setQuizIndex(i => (i + 1) % quizFlashcards.length);
+      setQuizIndex(i => (i + 1) % (quizFlashcards.length || 1));
       setIsFlipped(false);
     }
   };
@@ -24,15 +24,19 @@ const FlashQuiz = ({ flashcards, learnedStatus, quizFromVocabId, quizIndex, isFl
       setQuizIndex(0);
       setIsFlipped(false);
     } else {
-      setQuizIndex(i => (i - 1 + quizFlashcards.length) % quizFlashcards.length);
+      setQuizIndex(i => (i - 1 + (quizFlashcards.length || 1)) % (quizFlashcards.length || 1));
       setIsFlipped(false);
     }
   };
 
   useEffect(() => {
-    setQuizIndex(0);
+    if (quizFlashcards.length === 0) {
+      setQuizIndex(0);
+    } else if (quizIndex >= quizFlashcards.length) {
+      setQuizIndex(0);
+    }
     setIsFlipped(false);
-  }, [quizFromVocabId, flashcards, setQuizIndex, setIsFlipped]);
+  }, [quizFromVocabId, flashcards, quizIndex, setQuizIndex, setIsFlipped, quizFlashcards.length]);
 
   return (
     <section className="dashboard-quiz dashboard-col">
@@ -43,19 +47,21 @@ const FlashQuiz = ({ flashcards, learnedStatus, quizFromVocabId, quizIndex, isFl
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 0 }}>
           <div className={`quiz-flashcard${isFlipped ? ' flipped' : ''}`} style={{ marginTop: 0, minHeight: 240 }} onClick={() => setIsFlipped(f => !f)}>
             <div className="quiz-flashcard-inner" style={{ zIndex: 2 }}>
-              <div className="quiz-front" style={{ marginBottom: 6 }}>{quizFlashcards[quizIndex].front}</div>
-              {quizFlashcards[quizIndex].phonetic && <div className="quiz-phonetic">{quizFlashcards[quizIndex].phonetic}</div>}
-              {quizFromVocabId && learnedStatus[quizFlashcards[quizIndex].id] && (
+              <div className="quiz-front" style={{ marginBottom: 6 }}>
+                {quizFlashcards[quizIndex]?.front || 'N/A'}
+              </div>
+              {quizFlashcards[quizIndex]?.phonetic && <div className="quiz-phonetic">{quizFlashcards[quizIndex].phonetic}</div>}
+              {quizFromVocabId && learnedStatus[quizFlashcards[quizIndex]?.id] && (
                 <div style={{ color: '#2ecc40', fontSize: 13, fontStyle: 'italic', marginTop: 2 }}>Đã thuộc</div>
               )}
-              {(quizFlashcards[quizIndex].image_url && quizFlashcards[quizIndex].image_url.startsWith('http')) ? (
+              {(quizFlashcards[quizIndex]?.image_url && quizFlashcards[quizIndex].image_url.startsWith('http')) ? (
                 <img src={quizFlashcards[quizIndex].image_url} alt="minh họa" style={{ height: 140, marginTop: 10, borderRadius: 8, objectFit: 'cover', boxShadow: '0 2px 8px #0002' }} />
-              ) : quizFlashcards[quizIndex].image_url ? (
+              ) : quizFlashcards[quizIndex]?.image_url ? (
                 <img src={`http://localhost:5000${quizFlashcards[quizIndex].image_url}`} alt="minh họa" style={{ height: 140, marginTop: 10, borderRadius: 8, objectFit: 'cover', boxShadow: '0 2px 8px #0002' }} />
               ) : null}
             </div>
             <div className="quiz-flashcard-inner quiz-flashcard-back" style={{ zIndex: 1 }}>
-              <div className="quiz-back">{quizFlashcards[quizIndex].back}</div>
+              <div className="quiz-back">{quizFlashcards[quizIndex]?.back || 'N/A'}</div>
             </div>
           </div>
           <div className="quiz-controls">

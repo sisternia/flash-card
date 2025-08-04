@@ -109,7 +109,18 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
       if (addVocabSetId === selectedSetId) {
         const res = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards`);
         const data = await res.json();
-        if (res.ok) setFlashcards(data);
+        if (res.ok) {
+          setFlashcards(data);
+          setLearnedStatus(prev => {
+            const newStatus = { ...prev };
+            data.forEach(card => {
+              if (!(card.id in newStatus)) {
+                newStatus[card.id] = false;
+              }
+            });
+            return newStatus;
+          });
+        }
       }
     } catch (err) {
       setAddVocabError(err.message);
@@ -128,6 +139,15 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
         const data = await res.json();
         if (!res.ok) throw new Error(data.msg || 'Lỗi tải từ vựng');
         setFlashcards(data);
+        setLearnedStatus(prev => {
+          const newStatus = { ...prev };
+          data.forEach(card => {
+            if (!(card.id in newStatus)) {
+              newStatus[card.id] = false;
+            }
+          });
+          return newStatus;
+        });
       } catch (err) {
         setErrorFlashcards(err.message);
       } finally {
@@ -135,7 +155,7 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
       }
     };
     fetchFlashcards();
-  }, [selectedSetId, setFlashcards]);
+  }, [selectedSetId, setFlashcards, setLearnedStatus]);
 
   const handleToggleLearned = (id) => {
     setLearnedStatus(prev => ({ ...prev, [id]: !prev[id] }));
@@ -175,7 +195,18 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
       setDeleteVocabId(null);
       const res = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards`);
       const data = await res.json();
-      if (res.ok) setFlashcards(data);
+      if (res.ok) {
+        setFlashcards(data);
+        setLearnedStatus(prev => {
+          const newStatus = { ...prev };
+          data.forEach(card => {
+            if (!(card.id in newStatus)) {
+              newStatus[card.id] = false;
+            }
+          });
+          return newStatus;
+        });
+      }
     } catch (err) {
       setDeleteVocabError('Lỗi xóa từ vựng');
     } finally {
@@ -202,7 +233,18 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
       setShowEditVocab(false);
       const res2 = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards`);
       const data2 = await res2.json();
-      if (res2.ok) setFlashcards(data2);
+      if (res2.ok) {
+        setFlashcards(data2);
+        setLearnedStatus(prev => {
+          const newStatus = { ...prev };
+          data2.forEach(card => {
+            if (!(card.id in newStatus)) {
+              newStatus[card.id] = false;
+            }
+          });
+          return newStatus;
+        });
+      }
     } catch (err) {
       setEditVocabError('Lỗi sửa từ vựng');
     } finally {
