@@ -1,0 +1,73 @@
+.modal-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.18);
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-add-set {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px #e6394633;
+    padding: 2.2rem 2.5rem 1.5rem 2.5rem;
+    min-width: 320px;
+    max-width: 95vw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    animation: popup-fade-in 0.25s;
+  }
+  .modal-add-vocab {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px #3b4cca33;
+    padding: 2.2rem 2.5rem 1.5rem 2.5rem;
+    min-width: 320px;
+    max-width: 95vw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    animation: popup-fade-in 0.25s;
+  }
+  .modal-add-vocab input[type="file"] {
+    display: none;
+  }
+  .modal-add-vocab button[type="button"] {
+    background: #ffce00;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .modal-add-vocab button[type="button"]:hover {
+    background: #ffd84d;
+  }
+  .jp-btn-main {
+    background: #fff;
+    color: #e63946;
+    border: 2px solid #e63946;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .jp-btn-main:hover:not(:disabled) {
+    color: #ba1b1d;
+    border-color: #ba1b1d;
+    background: #fff;
+  }
+  @keyframes popup-fade-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
