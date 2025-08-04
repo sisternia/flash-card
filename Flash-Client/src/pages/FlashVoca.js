@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './FlashVoca.css';
 import './Home.css';
 import Modals from '../components/Modals';
@@ -15,7 +15,7 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
   const [loadingFlashcards, setLoadingFlashcards] = useState(false);
   const [errorFlashcards, setErrorFlashcards] = useState('');
   const [currentVocabPage, setCurrentVocabPage] = useState(1);
-  const [vocabsPerPage] = useState(3);
+  const [vocabsPerPage, setVocabsPerPage] = useState(3);
   const [vocabMenuOpenId, setVocabMenuOpenId] = useState(null);
   const [showEditVocab, setShowEditVocab] = useState(false);
   const [editVocabData, setEditVocabData] = useState(null);
@@ -28,6 +28,25 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
   const [editVocabImage, setEditVocabImage] = useState(null);
   const [vocabImageUrl, setVocabImageUrl] = useState('');
   const [editVocabImageUrl, setEditVocabImageUrl] = useState('');
+  const vocabListRef = useRef(null);
+
+  useEffect(() => {
+    const calculateVocabsPerPage = () => {
+      if (vocabListRef.current) {
+        const containerHeight = vocabListRef.current.clientHeight;
+        const itemHeight = 150; // Approximate height of a vocab item
+        const newVocabsPerPage = Math.floor(containerHeight / itemHeight);
+        setVocabsPerPage(newVocabsPerPage > 0 ? newVocabsPerPage : 1);
+      }
+    };
+
+    calculateVocabsPerPage();
+    window.addEventListener('resize', calculateVocabsPerPage);
+
+    return () => {
+      window.removeEventListener('resize', calculateVocabsPerPage);
+    };
+  }, []);
 
   const indexOfLastVocab = currentVocabPage * vocabsPerPage;
   const indexOfFirstVocab = indexOfLastVocab - vocabsPerPage;
@@ -214,7 +233,7 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
             </button>
           )}
         </div>
-        <div className="vocab-list">
+        <div className="vocab-list" ref={vocabListRef}>
           {loadingFlashcards ? (
             <div style={{ color: '#888' }}>Đang tải từ vựng...</div>
           ) : errorFlashcards ? (
