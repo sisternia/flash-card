@@ -2,6 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import './FlashMana.css';
 import './Home.css';
 import Modals from '../components/Modals';
+import {
+  fetchUserSets,
+  createSet,
+  updateSet,
+  deleteSet
+} from '../api';
 
 const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
   const [sets, setSets] = useState([]);
@@ -50,14 +56,7 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
         );
       }
 
-      let startPage;
-      if (currentPage === 1) {
-        startPage = 1;
-      } else if (currentPage === pageCount) {
-        startPage = pageCount - 2;
-      } else {
-        startPage = currentPage - 1;
-      }
+      let startPage = currentPage === 1 ? 1 : currentPage === pageCount ? pageCount - 2 : currentPage - 1;
 
       for (let i = 0; i < 3; i++) {
         const page = startPage + i;
@@ -87,13 +86,11 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
   };
 
   useEffect(() => {
-    const fetchSets = async () => {
+    const loadSets = async () => {
       setLoadingSets(true);
       setErrorSets('');
       try {
-        const res = await fetch(`http://localhost:5000/api/sets?user_id=${user_id}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.msg || 'Lỗi tải danh sách bộ flashcard');
+        const data = await fetchUserSets(user_id);
         setSets(data);
         if (data.length > 0 && !selectedSetId) {
           setSelectedSetId(data[0].id);
@@ -105,8 +102,8 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
       }
     };
 
-    if (user_id) fetchSets();
-  }, [user_id, setSelectedSetId, selectedSetId]);
+    if (user_id) loadSets();
+  }, [user_id, selectedSetId, setSelectedSetId]);
 
   useEffect(() => {
     if (listRef.current) {
@@ -124,13 +121,7 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
     setLoadingAdd(true);
     setErrorAdd('');
     try {
-      const res = await fetch('http://localhost:5000/api/sets', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id, title: newSetTitle, description: newSetDesc }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.msg || 'Lỗi tạo bộ flashcard');
+      const data = await createSet(user_id, newSetTitle, newSetDesc);
       setSets([...sets, data]);
       setSelectedSetId(data.id);
       setShowAddSet(false);
@@ -154,16 +145,10 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
     setEditSetLoading(true);
     setEditSetError('');
     try {
-      const res = await fetch(`http://localhost:5000/api/sets/${editSetData.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: editSetData.title, description: editSetData.description }),
-      });
-      if (!res.ok) throw new Error('Lỗi sửa bộ flashcard');
+      await updateSet(editSetData.id, editSetData.title, editSetData.description);
       setShowEditSet(false);
-      const res2 = await fetch(`http://localhost:5000/api/sets?user_id=${user_id}`);
-      const data2 = await res2.json();
-      if (res2.ok) setSets(data2);
+      const updated = await fetchUserSets(user_id);
+      setSets(updated);
     } catch (err) {
       setEditSetError('Lỗi sửa bộ flashcard');
     } finally {
@@ -173,9 +158,7 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
 
   const handleDeleteSet = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/sets/${id}`, { method: 'DELETE' });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.msg || 'Lỗi xóa bộ flashcard');
+      await deleteSet(id);
       const updatedSets = sets.filter((s) => s.id !== id);
       setSets(updatedSets);
       if (selectedSetId === id) {
