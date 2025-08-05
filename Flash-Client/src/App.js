@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Quiz from './pages/Quiz';
 import Register from './pages/Register';
 import SetDetail from './pages/SetDetail';
+import { checkUser } from './services/api';
 
 function App() {
   const [user, setUser] = React.useState(() => {
@@ -19,6 +20,7 @@ function App() {
       return null;
     }
   });
+
   const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false);
   const [showBackToLoginConfirm, setShowBackToLoginConfirm] = React.useState(false);
   const navigate = useNavigate();
@@ -26,17 +28,11 @@ function App() {
   const prevPath = useRef(location.pathname);
   const nodeRef = useRef(null);
 
-  // Kiểm tra user hợp lệ với backend khi app mount
   useEffect(() => {
-    const checkUser = async () => {
-      if (!user) return;
+    const verifyUser = async () => {
+      if (!user || !user.email) return;
       try {
-        // Gọi API kiểm tra user (ví dụ: /api/auth/check hoặc /api/auth/me)
-        const res = await fetch('http://localhost:5000/api/auth/check', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: user.username })
-        });
+        const res = await checkUser(user.email);
         if (!res.ok) throw new Error('User not valid');
       } catch {
         setUser(null);
@@ -44,11 +40,9 @@ function App() {
         navigate('/');
       }
     };
-    checkUser();
-    // eslint-disable-next-line
+    verifyUser();
   }, []);
 
-  // Xác nhận khi quay lại trang login bằng nút trình duyệt
   useEffect(() => {
     if (user && location.pathname === '/login' && prevPath.current !== '/login') {
       setShowBackToLoginConfirm(true);
@@ -68,7 +62,6 @@ function App() {
   };
   const cancelLogout = () => setShowLogoutConfirm(false);
 
-  // Xác nhận khi quay lại login
   const confirmBackToLogin = () => {
     setUser(null);
     localStorage.removeItem('user');
@@ -77,7 +70,6 @@ function App() {
   };
   const cancelBackToLogin = () => {
     setShowBackToLoginConfirm(false);
-    // Nếu localStorage còn user thì set lại user
     const saved = localStorage.getItem('user');
     if (saved) setUser(JSON.parse(saved));
     navigate('/home');
@@ -101,6 +93,8 @@ function App() {
           </div>
         </CSSTransition>
       </SwitchTransition>
+
+      {/* Confirm logout */}
       {showLogoutConfirm && (
         <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.25)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center'}}>
           <div style={{background:'#fff',borderRadius:16,padding:'2.5rem 2.5rem',boxShadow:'0 8px 32px #e6394633',textAlign:'center'}}>
@@ -112,6 +106,8 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Confirm back to login */}
       {showBackToLoginConfirm && (
         <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.25)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center'}}>
           <div style={{background:'#fff',borderRadius:16,padding:'2.5rem 2.5rem',boxShadow:'0 8px 32px #e6394633',textAlign:'center'}}>
