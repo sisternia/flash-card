@@ -163,11 +163,13 @@
   justify-content: center;
   align-items: flex-start;
   margin-top: 32px;
+  flex-wrap: wrap; /* Thêm flex-wrap để tự động xuống hàng */
 }
 .dragdrop-pairs {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  flex-basis: 45%; /* Đặt kích thước cơ bản cho mỗi cột */
 }
 .dragdrop-dropzone {
   min-width: 180px;
@@ -184,13 +186,16 @@
   position: relative;
   transition: border 0.2s, background 0.2s;
 }
-.dragdrop-dropzone.correct {
+.dragdrop-dropzone.matched {
   border: 2.5px solid #2ecc40;
   background: #eafaf1;
+  justify-content: space-between; /* Căn đều các phần tử con */
+  padding: 0 16px; /* Thêm padding để không bị sát lề */
 }
-.dragdrop-dropzone.wrong {
-  border: 2.5px solid #e63946;
-  background: #fff0f0;
+.dragdrop-back {
+  font-size: 1.1rem;
+  color: #2ecc40;
+  font-weight: bold;
 }
 .dragdrop-tick {
   color: #2ecc40;
