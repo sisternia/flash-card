@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './FlashMana.css';
 import './Home.css';
 import Modals from '../components/Modals';
@@ -17,15 +17,16 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
   const [editSetData, setEditSetData] = useState(null);
   const [editSetLoading, setEditSetLoading] = useState(false);
   const [editSetError, setEditSetError] = useState('');
-
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [setsPerPage] = useState(2);
+  const [setsPerPage, setSetsPerPage] = useState(3);
+
+  const listRef = useRef();
+
   const indexOfLastSet = currentPage * setsPerPage;
   const indexOfFirstSet = indexOfLastSet - setsPerPage;
   const currentSets = sets.slice(indexOfFirstSet, indexOfLastSet);
 
-  const paginate = pageNumber => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const renderPagination = () => {
     const pageCount = Math.ceil(sets.length / setsPerPage);
@@ -35,11 +36,7 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
     if (pageCount <= 3) {
       for (let i = 1; i <= pageCount; i++) {
         pages.push(
-          <button
-            key={i}
-            onClick={() => paginate(i)}
-            className={currentPage === i ? 'active' : ''}
-          >
+          <button key={i} onClick={() => paginate(i)} className={currentPage === i ? 'active' : ''}>
             {i}
           </button>
         );
@@ -63,14 +60,15 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
       }
 
       for (let i = 0; i < 3; i++) {
-        if (startPage + i <= pageCount) {
+        const page = startPage + i;
+        if (page <= pageCount) {
           pages.push(
             <button
-              key={startPage + i}
-              onClick={() => paginate(startPage + i)}
-              className={currentPage === startPage + i ? 'active' : ''}
+              key={page}
+              onClick={() => paginate(page)}
+              className={currentPage === page ? 'active' : ''}
             >
-              {startPage + i}
+              {page}
             </button>
           );
         }
@@ -106,8 +104,20 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
         setLoadingSets(false);
       }
     };
+
     if (user_id) fetchSets();
   }, [user_id, setSelectedSetId, selectedSetId]);
+
+  useEffect(() => {
+    if (listRef.current) {
+      const listHeight = listRef.current.clientHeight;
+      const flashcardHeight = 170;
+      const footerHeight = 64;
+      const availableHeight = listHeight - footerHeight;
+      const maxPerPage = Math.floor(availableHeight / flashcardHeight);
+      setSetsPerPage(maxPerPage > 0 ? maxPerPage : 1);
+    }
+  }, [loadingSets, sets]);
 
   const handleAddSet = async () => {
     if (!newSetTitle.trim()) return;
@@ -117,7 +127,7 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
       const res = await fetch('http://localhost:5000/api/sets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id, title: newSetTitle, description: newSetDesc })
+        body: JSON.stringify({ user_id, title: newSetTitle, description: newSetDesc }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.msg || 'Lỗi tạo bộ flashcard');
@@ -147,7 +157,7 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
       const res = await fetch(`http://localhost:5000/api/sets/${editSetData.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: editSetData.title, description: editSetData.description })
+        body: JSON.stringify({ title: editSetData.title, description: editSetData.description }),
       });
       if (!res.ok) throw new Error('Lỗi sửa bộ flashcard');
       setShowEditSet(false);
@@ -166,9 +176,10 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
       const res = await fetch(`http://localhost:5000/api/sets/${id}`, { method: 'DELETE' });
       const data = await res.json();
       if (!res.ok) throw new Error(data.msg || 'Lỗi xóa bộ flashcard');
-      setSets(sets.filter(set => set.id !== id));
+      const updatedSets = sets.filter((s) => s.id !== id);
+      setSets(updatedSets);
       if (selectedSetId === id) {
-        setSelectedSetId(sets.length > 1 ? sets.find(set => set.id !== id)?.id : null);
+        setSelectedSetId(updatedSets.length ? updatedSets[0].id : null);
       }
       setMenuOpenId(null);
     } catch (err) {
@@ -193,7 +204,14 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
       <aside className="dashboard-sidebar dashboard-col">
         <button
           className="back-btn"
-          style={{ position: 'absolute', top: 18, left: 18, minWidth: 70, padding: '4px 16px', fontSize: '0.95rem' }}
+          style={{
+            position: 'absolute',
+            top: 18,
+            left: 18,
+            minWidth: 70,
+            padding: '4px 16px',
+            fontSize: '0.95rem',
+          }}
           onClick={() => navigate(-1)}
         >
           BACK
@@ -202,7 +220,14 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
           <h2>Bộ Flashcard</h2>
           <button
             className="jp-btn-main"
-            style={{ marginBottom: 12, marginLeft: 15, width: '100%', padding: '0.6rem 1.4rem', fontSize: '0.9rem' }}
+            style={{
+              marginLeft: 15,
+              width: '100%',
+              padding: '0.5rem 1.3rem',
+              fontSize: '0.9rem',
+              background:'#e63946',
+              color:'#fff'
+            }}
             onClick={() => setShowAddSet(true)}
           >
             + Tạo bộ mới
@@ -213,16 +238,16 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
         ) : errorSets ? (
           <div style={{ marginTop: 32, color: '#e63946' }}>{errorSets}</div>
         ) : (
-          <div className="flashcard-set-list-jp">
-            {currentSets.map(set => (
+          <div className="flashcard-set-list-jp" ref={listRef}>
+            {currentSets.map((set) => (
               <div
-                className={`flashcard-set-jp${set.id === selectedSetId ? ' selected' : ''}`}
+                className={`flashcard-set${set.id === selectedSetId ? ' selected' : ''}`}
                 key={set.id}
                 onClick={() => setSelectedSetId(set.id)}
               >
                 <button
                   className="set-menu-btn"
-                  onClick={e => {
+                  onClick={(e) => {
                     e.stopPropagation();
                     setMenuOpenId(set.id === menuOpenId ? null : set.id);
                   }}
@@ -231,10 +256,16 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
                   <span>&#8942;</span>
                 </button>
                 {menuOpenId === set.id && (
-                  <div className="set-menu" onClick={e => e.stopPropagation()}>
-                    <button className="set-menu-option blue" onClick={() => handleEditSet(set)}>Sửa tên</button>
-                    <button className="set-menu-option orange" onClick={() => handleEditSet(set)}>Thêm ghi chú</button>
-                    <button className="set-menu-option red" onClick={() => handleDeleteSet(set.id)}>Xóa bộ Flashcard</button>
+                  <div className="set-menu" onClick={(e) => e.stopPropagation()}>
+                    <button className="set-menu-option blue" onClick={() => handleEditSet(set)}>
+                      Sửa tên
+                    </button>
+                    <button className="set-menu-option orange" onClick={() => handleEditSet(set)}>
+                      Thêm ghi chú
+                    </button>
+                    <button className="set-menu-option red" onClick={() => handleDeleteSet(set.id)}>
+                      Xóa bộ Flashcard
+                    </button>
                   </div>
                 )}
                 <div className="set-content">
@@ -245,10 +276,9 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
             ))}
           </div>
         )}
-        <div className='pagination'>
-          {renderPagination()}
-        </div>
+        <div className="pagination">{renderPagination()}</div>
       </aside>
+
       <Modals
         showAddSet={showAddSet}
         setShowAddSet={setShowAddSet}
