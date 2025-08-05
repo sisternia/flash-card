@@ -7,7 +7,7 @@ import {
   createSet,
   updateSet,
   deleteSet
-} from '../api';
+} from '../services/api';
 
 const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
   const [sets, setSets] = useState([]);
