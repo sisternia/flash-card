@@ -4,16 +4,16 @@ import './Quiz.css';
 
 const shuffle = arr => arr.map(v => [Math.random(), v]).sort(() => Math.random() - 0.5).map(([_, v]) => v);
 
-const PAIRS_PER_ROUND = 6; // 3 pairs per column
+const PAIRS_PER_ROUND = 6;
 
 const Quiz = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sets, setSets] = useState([]);
   const [selectedSetId, setSelectedSetId] = useState(null);
-  const [flashcards, setFlashcards] = useState([]); // Master list of all flashcards
-  const [pairs, setPairs] = useState([]); // Pairs for the current round
-  const [options, setOptions] = useState([]); // Options for the current round
+  const [flashcards, setFlashcards] = useState([]);
+  const [pairs, setPairs] = useState([]);
+  const [options, setOptions] = useState([]);
   const [dragId, setDragId] = useState(null);
   const [dropResult, setDropResult] = useState({});
   const [result, setResult] = useState({ correct: 0, total: 0, finished: false });
@@ -22,9 +22,13 @@ const Quiz = () => {
   const timerRef = useRef();
   const [currentPage, setCurrentPage] = useState(1);
   const [currentRound, setCurrentRound] = useState(0);
+  const [incorrectCards, setIncorrectCards] = useState([]);
+  const [incorrectPage, setIncorrectPage] = useState(1);
+  const [showReviewConfirm, setShowReviewConfirm] = useState(false);
+  const [showEmptySetMessage, setShowEmptySetMessage] = useState(false);
   const decksPerPage = 4;
+  const incorrectPerPage = 5;
 
-  // Fetch sets
   useEffect(() => {
     const fetchSets = async () => {
       const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -45,23 +49,28 @@ const Quiz = () => {
     setOptions(shuffle(roundFlashcards.map(card => ({ id: card.id, back: card.back, matched: false }))));
   };
 
-  // Fetch flashcards and setup first round
   useEffect(() => {
     if (!selectedSetId) return;
+    if (selectedSetId === 'review') return;
     const fetchFlashcards = async () => {
       const res = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards`);
       const data = await res.json();
+      if (data.length === 0) {
+        setShowEmptySetMessage(true);
+        setSelectedSetId(null);
+        return;
+      }
       setFlashcards(data);
       setResult({ correct: 0, total: data.length, finished: false });
-      setTimeLeft(data.length * 5); // 5 seconds per word for the whole game
+      setTimeLeft(data.length * 5);
       setGameStarted(false);
       setCurrentRound(0);
+      setIncorrectCards([]);
       setupRound(0, data);
     };
     fetchFlashcards();
   }, [selectedSetId]);
 
-  // Timer logic
   useEffect(() => {
     if (!gameStarted || result.finished) return;
     timerRef.current = setInterval(() => {
@@ -83,28 +92,31 @@ const Quiz = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(sets.length / decksPerPage);
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  const playCorrectSound = () => {
+  const playSound = (type) => {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
-
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
-
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
     gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
 
-    oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.2);
+    if (type === 'correct') {
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.2);
+    } else {
+      oscillator.type = 'square';
+      oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.2);
+    }
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.2);
   };
 
-  // Drag and drop handlers
   const handleDragStart = id => setDragId(id);
 
   const handleDrop = (targetId) => {
@@ -113,60 +125,97 @@ const Quiz = () => {
     const targetPair = pairs.find(p => p.id === targetId);
     if (!targetPair || targetPair.matched) {
       setDragId(null);
-      return; // Already matched, do nothing.
+      return;
     }
 
     const isCorrect = dragId === targetId;
 
     if (isCorrect) {
-      playCorrectSound();
+      playSound('correct');
       setDropResult({ ...dropResult, [targetId]: 'disappearing' });
+      setResult(r => ({ ...r, correct: r.correct + 1 }));
 
       setTimeout(() => {
         setOptions(currentOpts => currentOpts.map(o => (o.id === dragId ? { ...o, matched: true } : o)));
         setPairs(currentPairs => {
           const newPairs = currentPairs.map(p => (p.id === targetId ? { ...p, matched: true } : p));
-          
-          const roundCorrectCount = newPairs.filter(p => p.matched).length;
-          const totalCorrectCount = (currentRound * PAIRS_PER_ROUND) + roundCorrectCount;
-          
-          // Check if round is complete
-          if (roundCorrectCount === pairs.length) {
+          if (newPairs.every(p => p.matched)) {
             const nextRound = currentRound + 1;
             if (nextRound * PAIRS_PER_ROUND < flashcards.length) {
-              // Move to next round
               setTimeout(() => {
                 setCurrentRound(nextRound);
                 setupRound(nextRound, flashcards);
                 setDropResult({});
               }, 1000);
             } else {
-              // Game finished
               clearInterval(timerRef.current);
-              setResult({ correct: totalCorrectCount, total: flashcards.length, finished: true });
+              setResult(r => ({ ...r, finished: true }));
             }
-          } else {
-            setResult(r => ({ ...r, correct: totalCorrectCount }));
           }
           return newPairs;
         });
-      }, 600); // Wait for animation to finish
+      }, 600);
 
     } else {
+      playSound('wrong');
       setDropResult({ ...dropResult, [targetId]: 'wrong' });
+      const incorrectFlashcard = flashcards.find(f => f.id === targetId);
+      if (incorrectFlashcard && !incorrectCards.find(c => c.id === targetId)) {
+        setIncorrectCards(prev => [...prev, incorrectFlashcard]);
+      }
+
       setTimeout(() => {
-        setDropResult(res => {
-          const newRes = { ...res };
-          delete newRes[targetId];
-          return newRes;
-        });
+        setPairs(ps => ps.map(p => p.id === targetId ? { ...p, matched: true } : p));
+        setOptions(os => os.map(o => o.id === dragId ? { ...o, matched: true } : o));
+        setDropResult({});
+
+        const allMatched = pairs.map(p => p.id === targetId ? { ...p, matched: true } : p).every(p => p.matched);
+        if (allMatched) {
+            const nextRound = currentRound + 1;
+            if (nextRound * PAIRS_PER_ROUND < flashcards.length) {
+                setTimeout(() => {
+                    setCurrentRound(nextRound);
+                    setupRound(nextRound, flashcards);
+                }, 1000);
+            } else {
+                clearInterval(timerRef.current);
+                setResult(r => ({ ...r, finished: true }));
+            }
+        }
       }, 800);
     }
     
     setDragId(null);
   };
 
-  // Progress bar
+  const handleReviewConfirm = (confirm) => {
+    setShowReviewConfirm(false);
+    if (confirm) {
+      setFlashcards(incorrectCards);
+      setResult({ correct: 0, total: incorrectCards.length, finished: false });
+      setTimeLeft(incorrectCards.length * 5);
+      setGameStarted(false);
+      setCurrentRound(0);
+      setIncorrectCards([]);
+      setupRound(0, incorrectCards);
+      setSelectedSetId('review');
+    } else {
+      setSelectedSetId(null);
+      setFlashcards([]);
+      setIncorrectCards([]);
+      setResult({ correct: 0, total: 0, finished: false });
+      setGameStarted(false);
+    }
+  };
+
+  const handleExit = () => {
+    setSelectedSetId(null);
+    setFlashcards([]);
+    setIncorrectCards([]);
+    setResult({ correct: 0, total: 0, finished: false });
+    setGameStarted(false);
+  };
+
   const renderProgressBar = () => (
     <div style={{ width: '100%', height: 16, background: '#e0e0e0', borderRadius: 8, marginBottom: 18 }}>
       <div style={{
@@ -179,10 +228,24 @@ const Quiz = () => {
     </div>
   );
 
-  // Bước chọn bộ thẻ
+  const indexOfLastIncorrect = incorrectPage * incorrectPerPage;
+  const indexOfFirstIncorrect = indexOfLastIncorrect - incorrectPerPage;
+  const currentIncorrectCards = incorrectCards.slice(indexOfFirstIncorrect, indexOfLastIncorrect);
+  const totalIncorrectPages = Math.ceil(incorrectCards.length / incorrectPerPage);
+
   if (!selectedSetId) {
     return (
       <div className="quiz-bg-jp">
+        {showEmptySetMessage && (
+            <div className="confirm-modal-overlay">
+                <div className="confirm-modal">
+                    <p>This set has no vocabulary to review.</p>
+                    <div className="confirm-modal-buttons">
+                        <button onClick={() => setShowEmptySetMessage(false)}>OK</button>
+                    </div>
+                </div>
+            </div>
+        )}
         <button
           style={{ position: 'absolute', top: 70, left: 18, zIndex: 10, background: '#fff', border: '2px solid #e63946', borderRadius: 8, padding: '0.4rem 1.1rem', fontWeight: 'bold', cursor: 'pointer' }}
           onClick={() => navigate(-1)}
@@ -200,32 +263,35 @@ const Quiz = () => {
             ))}
           </div>
           <div className="pagination-jp">
-            {pageNumbers.map(number => (
-              <button key={number} onClick={() => paginate(number)} className={`page-number-jp ${currentPage === number ? 'current-page-jp' : ''}`}>
-                {number}
-              </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+              <button key={number} onClick={() => paginate(number)} className={`page-number-jp ${currentPage === number ? 'current-page-jp' : ''}`}>{number}</button>
             ))}
-            {totalPages > 1 && (
-              <button onClick={() => paginate(totalPages)} className="last-page-jp">
-                Last Page
-              </button>
-            )}
           </div>
         </div>
       </div>
     );
   }
 
-  // Bước chơi game
   return (
     <div className="quiz-bg-jp">
+      {showReviewConfirm && (
+        <div className="confirm-modal-overlay">
+          <div className="confirm-modal">
+            <p>Bạn có muốn ôn tập lại những từ đã sai ở game trước đó không?</p>
+            <div className="confirm-modal-buttons">
+              <button onClick={() => handleReviewConfirm(true)}>Yes</button>
+              <button onClick={() => handleReviewConfirm(false)}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
       <button
         style={{ position: 'absolute', top: 70, left: 18, zIndex: 10, background: '#fff', border: '2px solid #e63946', borderRadius: 8, padding: '0.4rem 1.1rem', fontWeight: 'bold', cursor: 'pointer' }}
         onClick={() => navigate(-1)}
       >
         ← BACK
       </button>
-      <div className="quiz-container-jp">
+      <div className="quiz-container-jp game-frame">
         <h2>Mini game kéo thả từ vựng</h2>
         {gameStarted ? (
           <>
@@ -235,20 +301,40 @@ const Quiz = () => {
               <div className="quiz-finish-jp">
                 <h3>Bạn đã hoàn thành!</h3>
                 <div>Đúng {result.correct} / {result.total} từ</div>
-                <button className="jp-btn-main" onClick={() => window.location.reload()}>Chơi lại</button>
+                {incorrectCards.length > 0 && (
+                  <div className="incorrect-words-container">
+                    <h4>Các từ bạn đã sai:</h4>
+                    <ul>
+                      {currentIncorrectCards.map(card => (
+                        <li key={card.id}>{card.front} - {card.back}</li>
+                      ))}
+                    </ul>
+                    <div className="pagination-jp">
+                      {Array.from({ length: totalIncorrectPages }, (_, i) => i + 1).map(number => (
+                        <button key={number} onClick={() => setIncorrectPage(number)} className={`page-number-jp ${incorrectPage === number ? 'current-page-jp' : ''}`}>{number}</button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="finish-buttons">
+                  {incorrectCards.length > 0 && 
+                    <button className="jp-btn-main review-btn" onClick={() => setShowReviewConfirm(true)}>Ôn tập lại từ sai</button>
+                  }
+                  <button className="jp-btn-main" onClick={() => setSelectedSetId(null)}>Chọn bộ thẻ khác</button>
+                  <button className="jp-btn-main exit-btn" onClick={handleExit}>Thoát</button>
+                </div>
               </div>
             ) : (
               <div className="dragdrop-main">
                 <div className="dragdrop-pairs">
-                  {pairs.map(pair => (
+                  {pairs.map(pair => !pair.matched && (
                     <div
                       key={pair.id}
-                      className={`dragdrop-dropzone ${pair.matched ? 'matched' : ''} ${dropResult[pair.id] || ''}`}
+                      className={`dragdrop-dropzone ${dropResult[pair.id] || ''}`}
                       onDragOver={e => { e.preventDefault(); }}
                       onDrop={e => { e.preventDefault(); handleDrop(pair.id); }}
                     >
                       <span className="dragdrop-front">{pair.front}</span>
-                      {pair.matched && <span className="dragdrop-tick">✔️</span>}
                     </div>
                   ))}
                 </div>
