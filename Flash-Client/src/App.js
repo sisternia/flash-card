@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Quiz from './pages/Quiz';
 import Register from './pages/Register';
 import SetDetail from './pages/SetDetail';
+import { checkUser } from './services/api';
 
 function App() {
   const [user, setUser] = React.useState(() => {
@@ -28,14 +29,10 @@ function App() {
   const nodeRef = useRef(null);
 
   useEffect(() => {
-    const checkUser = async () => {
+    const verifyUser = async () => {
       if (!user || !user.email) return;
       try {
-        const res = await fetch('http://localhost:5000/api/auth/check', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: user.email })
-        });
+        const res = await checkUser(user.email);
         if (!res.ok) throw new Error('User not valid');
       } catch {
         setUser(null);
@@ -43,8 +40,7 @@ function App() {
         navigate('/');
       }
     };
-    checkUser();
-    // eslint-disable-next-line
+    verifyUser();
   }, []);
 
   useEffect(() => {
