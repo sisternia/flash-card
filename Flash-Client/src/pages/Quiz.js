@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Quiz.css';
-import { getUserSets, getFlashcardsBySetId } from '../services/api';
 
 const shuffle = arr => arr.map(v => [Math.random(), v]).sort(() => Math.random() - 0.5).map(([_, v]) => v);
 
 const Quiz = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [sets, setSets] = useState([]);
+  const [sets, setSets] = useState([]); // Danh sách bộ thẻ
   const [selectedSetId, setSelectedSetId] = useState(null);
   const [flashcards, setFlashcards] = useState([]);
-  const [pairs, setPairs] = useState([]);
-  const [options, setOptions] = useState([]);
+  const [pairs, setPairs] = useState([]); // [{id, front, back, matched: false}]
+  const [options, setOptions] = useState([]); // [{id, back, dragging: false, matched: false}]
   const [dragId, setDragId] = useState(null);
   const [dropTarget, setDropTarget] = useState(null);
   const [result, setResult] = useState({ correct: 0, total: 0, finished: false });
@@ -28,7 +27,8 @@ const Quiz = () => {
       const user = JSON.parse(localStorage.getItem('user') || 'null');
       const user_id = user?.id;
       if (!user_id) return;
-      const data = await getUserSets(user_id);
+      const res = await fetch(`http://localhost:5000/api/sets?user_id=${user_id}`);
+      const data = await res.json();
       setSets(data);
     };
     fetchSets();
@@ -38,12 +38,13 @@ const Quiz = () => {
   useEffect(() => {
     if (!selectedSetId) return;
     const fetchFlashcards = async () => {
-      const data = await getFlashcardsBySetId(selectedSetId);
+      const res = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards`);
+      const data = await res.json();
       setFlashcards(data);
       setPairs(data.map(card => ({ id: card.id, front: card.front, matched: false })));
       setOptions(shuffle(data.map(card => ({ id: card.id, back: card.back, dragging: false, matched: false }))));
       setResult({ correct: 0, total: data.length, finished: false });
-      setTimeLeft(data.length * 2);
+      setTimeLeft(data.length * 2); // 2 giây mỗi từ
       setGameStarted(false);
     };
     fetchFlashcards();
@@ -114,6 +115,12 @@ const Quiz = () => {
   if (!selectedSetId) {
     return (
       <div className="quiz-bg-jp">
+        <button
+          style={{ position: 'absolute', top: 70, left: 18, zIndex: 10, background: '#fff', border: '2px solid #e63946', borderRadius: 8, padding: '0.4rem 1.1rem', fontWeight: 'bold', cursor: 'pointer' }}
+          onClick={() => navigate(-1)}
+        >
+          ← BACK
+        </button>
         <div className="quiz-container-jp">
           <h2>Chọn bộ thẻ để bắt đầu ôn tập</h2>
           <div className="decks-container">
@@ -145,19 +152,8 @@ const Quiz = () => {
   return (
     <div className="quiz-bg-jp">
       <button
-        style={{
-          position: 'absolute',
-          top: 70,
-          left: 18,
-          zIndex: 10,
-          background: '#fff',
-          border: '2px solid #e63946',
-          borderRadius: 8,
-          padding: '0.4rem 1.1rem',
-          fontWeight: 'bold',
-          cursor: 'pointer'
-        }}
-        onClick={() => setSelectedSetId(null)}
+        style={{ position: 'absolute', top: 70, left: 18, zIndex: 10, background: '#fff', border: '2px solid #e63946', borderRadius: 8, padding: '0.4rem 1.1rem', fontWeight: 'bold', cursor: 'pointer' }}
+        onClick={() => navigate(-1)}
       >
         ← BACK
       </button>
@@ -216,4 +212,4 @@ const Quiz = () => {
   );
 };
 
-export default Quiz; 
+export default Quiz;
