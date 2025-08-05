@@ -102,7 +102,6 @@
     margin-top: 0;
   }
   .vocab-img {
-    height: 96px;
     width: 96px;
     border-radius: 8px;
     margin-left: 18px;
@@ -210,4 +209,3 @@
       border-bottom: 1.5px solid #e0e0e0;
     }
   }
-
