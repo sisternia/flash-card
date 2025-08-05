@@ -162,10 +162,9 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
   };
 
   const handleVocabClick = (card) => {
-    if (learnedStatus[card.id]) {
-      setQuizFromVocabId(card.id);
-    }
+    setQuizFromVocabId(card.id);
   };
+
 
   const handleOpenVocabMenu = (id, e) => {
     e.stopPropagation();
