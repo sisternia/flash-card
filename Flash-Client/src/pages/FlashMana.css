@@ -148,21 +148,6 @@
     margin-top: 6px;
     border-radius: 4px;
   }
-  .back-btn {
-    border: 2px solid #e63946;
-    background: #fff;
-    color: #22223b;
-    border-radius: 24px;
-    padding: 0.7rem 1.5rem;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .back-btn:hover:not(:disabled) {
-    color: #e63946;
-    border-color: #ba1b1d;
-  }
   .jp-btn-main {
     background: #fff;
     color: #e63946;

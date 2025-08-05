@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './FlashMana.css';
 import './Home.css';
 import Modals from '../components/Modals';
+import { fetchUserSets, createSet, updateSet, deleteSet } from '../services/api'; 
 
 const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
   const [sets, setSets] = useState([]);
@@ -93,9 +94,7 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
       setLoadingSets(true);
       setErrorSets('');
       try {
-        const res = await fetch(`http://localhost:5000/api/sets?user_id=${user_id}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.msg || 'Lỗi tải danh sách bộ flashcard');
+        const data = await fetchUserSets(user_id);
         setSets(data);
         if (data.length > 0 && !selectedSetId) {
           setSelectedSetId(data[0].id);
@@ -107,20 +106,14 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
       }
     };
     if (user_id) fetchSets();
-  }, [user_id, setSelectedSetId, selectedSetId]);
+  }, [user_id, setSelectedSetId, selectedSetId]);  
 
   const handleAddSet = async () => {
     if (!newSetTitle.trim()) return;
     setLoadingAdd(true);
     setErrorAdd('');
     try {
-      const res = await fetch('http://localhost:5000/api/sets', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id, title: newSetTitle, description: newSetDesc })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.msg || 'Lỗi tạo bộ flashcard');
+      const data = await createSet(user_id, newSetTitle, newSetDesc);
       setSets([...sets, data]);
       setSelectedSetId(data.id);
       setShowAddSet(false);
@@ -131,7 +124,7 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
     } finally {
       setLoadingAdd(false);
     }
-  };
+  };  
 
   const handleEditSet = (set) => {
     setShowEditSet(true);
@@ -144,28 +137,20 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
     setEditSetLoading(true);
     setEditSetError('');
     try {
-      const res = await fetch(`http://localhost:5000/api/sets/${editSetData.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: editSetData.title, description: editSetData.description })
-      });
-      if (!res.ok) throw new Error('Lỗi sửa bộ flashcard');
+      await updateSet(editSetData.id, editSetData.title, editSetData.description);
+      const data2 = await fetchUserSets(user_id);
+      setSets(data2);
       setShowEditSet(false);
-      const res2 = await fetch(`http://localhost:5000/api/sets?user_id=${user_id}`);
-      const data2 = await res2.json();
-      if (res2.ok) setSets(data2);
     } catch (err) {
-      setEditSetError('Lỗi sửa bộ flashcard');
+      setEditSetError(err.message);
     } finally {
       setEditSetLoading(false);
     }
-  };
+  };  
 
   const handleDeleteSet = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/sets/${id}`, { method: 'DELETE' });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.msg || 'Lỗi xóa bộ flashcard');
+      await deleteSet(id);
       setSets(sets.filter(set => set.id !== id));
       if (selectedSetId === id) {
         setSelectedSetId(sets.length > 1 ? sets.find(set => set.id !== id)?.id : null);
@@ -174,7 +159,7 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
     } catch (err) {
       alert(err.message);
     }
-  };
+  };  
 
   useEffect(() => {
     const handleClick = (e) => {
@@ -191,13 +176,6 @@ const FlashMana = ({ user_id, navigate, selectedSetId, setSelectedSetId }) => {
   return (
     <>
       <aside className="dashboard-sidebar dashboard-col">
-        <button
-          className="back-btn"
-          style={{ position: 'absolute', top: 18, left: 18, minWidth: 70, padding: '4px 16px', fontSize: '0.95rem' }}
-          onClick={() => navigate(-1)}
-        >
-          BACK
-        </button>
         <div className="home-header-jp" style={{ marginTop: 32 }}>
           <h2>Bộ Flashcard</h2>
           <button
