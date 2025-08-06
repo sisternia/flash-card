@@ -28,6 +28,11 @@ function App() {
   const prevPath = useRef(location.pathname);
   const nodeRef = useRef(null);
 
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  };
+
   useEffect(() => {
     const verifyUser = async () => {
       if (!user || !user.email) return;
@@ -41,14 +46,13 @@ function App() {
       }
     };
     verifyUser();
-  }, []);
+  }, [user, navigate]);
 
   useEffect(() => {
     if (user && location.pathname === '/login' && prevPath.current !== '/login') {
       setShowBackToLoginConfirm(true);
     }
     prevPath.current = location.pathname;
-    // eslint-disable-next-line
   }, [location.pathname, user]);
 
   const handleLogout = () => {
@@ -77,7 +81,7 @@ function App() {
 
   return (
     <>
-      {user && <Navbar user={user} onLogout={handleLogout} />}
+      {user && <Navbar user={user} onLogout={handleLogout} onUpdateUser={updateUser} />}
       <SwitchTransition mode="out-in">
         <CSSTransition key={location.pathname} classNames="slide" timeout={400} nodeRef={nodeRef}>
           <div className="route-wrapper" ref={nodeRef}>

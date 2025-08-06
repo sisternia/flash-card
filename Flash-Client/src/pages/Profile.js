@@ -6,7 +6,7 @@ import {
   updatePassword
 } from '../services/api';
 
-const Profile = ({ user, onClose }) => {
+const Profile = ({ user, onClose, onUpdateUser }) => {
   const [userData, setUserData] = useState(null);
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -21,12 +21,13 @@ const Profile = ({ user, onClose }) => {
       try {
         const data = await getUserProfile(user.id);
         setUserData(data);
+        onUpdateUser({ ...user, username: data.username }); // Sync parent state with latest data
       } catch (err) {
         console.error('Error fetching profile:', err);
       }
     };
     fetchUserInfo();
-  }, [user.id]);  
+  }, [user.id, onUpdateUser]);  
 
   const handleRename = async () => {
     try {
@@ -34,7 +35,10 @@ const Profile = ({ user, onClose }) => {
       setMessage(data.msg);
       if (data.msg?.toLowerCase().includes('thành công')) {
         setShowRenameModal(false);
+        const updatedUser = { ...user, username: newUsername };
         setUserData(prev => ({ ...prev, username: newUsername }));
+        onUpdateUser(updatedUser); // Update parent state
+        localStorage.setItem('user', JSON.stringify(updatedUser)); // Update localStorage
       }
     } catch (err) {
       setMessage('Lỗi kết nối máy chủ');
