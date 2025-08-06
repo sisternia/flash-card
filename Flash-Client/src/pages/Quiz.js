@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getUserSets, getFlashcardsBySetId } from '../services/api';
 import './Quiz.css';
 
 const shuffle = arr => arr.map(v => [Math.random(), v]).sort(() => Math.random() - 0.5).map(([_, v]) => v);
@@ -33,9 +34,12 @@ const Quiz = () => {
     const fetchSets = async () => {
       const user = JSON.parse(localStorage.getItem('user') || 'null');
       if (!user?.id) return;
-      const res = await fetch(`http://localhost:5000/api/sets?user_id=${user.id}`);
-      const data = await res.json();
-      setSets(data);
+      try {
+        const data = await getUserSets(user.id);
+        setSets(data);
+      } catch (error) {
+        console.error('Lỗi tải danh sách bộ thẻ:', error);
+      }
     };
     fetchSets();
   }, []);
@@ -50,23 +54,25 @@ const Quiz = () => {
   };
 
   useEffect(() => {
-    if (!selectedSetId) return;
-    if (selectedSetId === 'review') return;
+    if (!selectedSetId || selectedSetId === 'review') return;
     const fetchFlashcards = async () => {
-      const res = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards`);
-      const data = await res.json();
-      if (data.length === 0) {
-        setShowEmptySetMessage(true);
-        setSelectedSetId(null);
-        return;
+      try {
+        const data = await getFlashcardsBySetId(selectedSetId);
+        if (data.length === 0) {
+          setShowEmptySetMessage(true);
+          setSelectedSetId(null);
+          return;
+        }
+        setFlashcards(data);
+        setResult({ correct: 0, total: data.length, finished: false });
+        setTimeLeft(data.length * 5);
+        setGameStarted(false);
+        setCurrentRound(0);
+        setIncorrectCards([]);
+        setupRound(0, data);
+      } catch (error) {
+        console.error('Lỗi tải flashcards:', error);
       }
-      setFlashcards(data);
-      setResult({ correct: 0, total: data.length, finished: false });
-      setTimeLeft(data.length * 5);
-      setGameStarted(false);
-      setCurrentRound(0);
-      setIncorrectCards([]);
-      setupRound(0, data);
     };
     fetchFlashcards();
   }, [selectedSetId]);
@@ -155,7 +161,6 @@ const Quiz = () => {
           return newPairs;
         });
       }, 600);
-
     } else {
       playSound('wrong');
       setDropResult({ ...dropResult, [targetId]: 'wrong' });
@@ -171,20 +176,20 @@ const Quiz = () => {
 
         const allMatched = pairs.map(p => p.id === targetId ? { ...p, matched: true } : p).every(p => p.matched);
         if (allMatched) {
-            const nextRound = currentRound + 1;
-            if (nextRound * PAIRS_PER_ROUND < flashcards.length) {
-                setTimeout(() => {
-                    setCurrentRound(nextRound);
-                    setupRound(nextRound, flashcards);
-                }, 1000);
-            } else {
-                clearInterval(timerRef.current);
-                setResult(r => ({ ...r, finished: true }));
-            }
+          const nextRound = currentRound + 1;
+          if (nextRound * PAIRS_PER_ROUND < flashcards.length) {
+            setTimeout(() => {
+              setCurrentRound(nextRound);
+              setupRound(nextRound, flashcards);
+            }, 1000);
+          } else {
+            clearInterval(timerRef.current);
+            setResult(r => ({ ...r, finished: true }));
+          }
         }
       }, 800);
     }
-    
+
     setDragId(null);
   };
 
@@ -237,14 +242,14 @@ const Quiz = () => {
     return (
       <div className="quiz-bg-jp">
         {showEmptySetMessage && (
-            <div className="confirm-modal-overlay">
-                <div className="confirm-modal">
-                    <p>This set has no vocabulary to review.</p>
-                    <div className="confirm-modal-buttons">
-                        <button onClick={() => setShowEmptySetMessage(false)}>OK</button>
-                    </div>
-                </div>
+          <div className="confirm-modal-overlay">
+            <div className="confirm-modal">
+              <p>This set has no vocabulary to review.</p>
+              <div className="confirm-modal-buttons">
+                <button onClick={() => setShowEmptySetMessage(false)}>OK</button>
+              </div>
             </div>
+          </div>
         )}
         <button
           style={{ position: 'absolute', top: 70, left: 18, zIndex: 10, background: '#fff', border: '2px solid #e63946', borderRadius: 8, padding: '0.4rem 1.1rem', fontWeight: 'bold', cursor: 'pointer' }}
