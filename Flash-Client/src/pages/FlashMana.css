@@ -1,237 +1,267 @@
+/* === Layout chính === */
 .dashboard-3col-container {
-    display: flex;
-    height: 100vh;
-    background: linear-gradient(180deg, #fff 0%, #ff6f91 100%);
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(180deg, #fff 0%, #ff6f91 100%);
+}
+.dashboard-col {
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 32px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.dashboard-sidebar {
+  flex: 1;
+  min-width: 300px;
+  border-right: 1.5px solid #e0e0e0;
+  background: transparent;
+  position: relative;
+  padding-top: 56px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* === Danh sách flashcard === */
+.flashcard-set-list-jp {
+  margin-top: 24px;
+  display: grid;
+  
+  gap: 16px;
+  justify-content: center; /* ✅ Canh giữa nội dung grid */
+  flex-grow: 1;
+  max-height: calc(100vh - 220px);
+  overflow: hidden;
+}
+
+.flashcard-set {
+  width: 250px; /* ✅ Chiều rộng cố định */
+  height: 150px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 16px;
+  background-color: #fdfdfd;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+
+.flashcard-set.selected {
+  border: 2.5px solid #3b4cca;
+  box-shadow: 0 4px 24px #3b4cca22;
+}
+
+/* === Nội dung flashcard === */
+.set-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+.set-content h3,
+.set-content p {
+  margin: 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+/* === Nút menu trên từng flashcard === */
+.set-menu-btn {
+  position: absolute;
+  top: 3px;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+.set-menu-btn:focus {
+  outline: none;
+}
+.set-menu-btn span {
+  font-size: 22px;
+  color: #e63946;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* === Menu popup trong flashcard === */
+.set-menu {
+  position: absolute;
+  top: 30px;
+  right: 8px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px #e6394633;
+  z-index: 10;
+  min-width: 140px;
+  padding: 4px 0;
+}
+.set-menu-option {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 6px;
+  transition: background 0.18s, color 0.18s;
+}
+.set-menu-option:hover {
+  background: #f6f7fb;
+  color: #22223b !important;
+}
+.set-menu-option.blue {
+  color: #3b4cca;
+}
+.set-menu-option.orange {
+  color: #ff9800;
+}
+.set-menu-option.red {
+  color: #e63946;
+}
+
+/* === Header của danh sách flashcard === */
+.home-header-jp {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  margin: 0 auto;
+  background-color: transparent;
+  max-width: 100%;
+}
+.home-header-jp h2 {
+  font-size: 19px;
+  font-weight: 1000;
+  color: #ff4d6d;
+  margin: 0;
+  position: relative;
+  white-space: nowrap;
+}
+.home-header-jp h2::after {
+  content: "";
+  display: block;
+  width: 50%;
+  height: 3px;
+  background: linear-gradient(90deg, #ff6a88, #ff99ac);
+  margin-top: 6px;
+  border-radius: 4px;
+}
+
+/* === Các nút chung === */
+.back-btn {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  border: 2px solid #e63946;
+  background: #fff;
+  color: #22223b;
+  border-radius: 24px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.back-btn:hover:not(:disabled) {
+  color: #e63946;
+  border-color: #ba1b1d;
+}
+
+.jp-btn-main {
+  background: #fff;
+  color: #e63946;
+  border: 2px solid #e63946;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.jp-btn-main:hover:not(:disabled) {
+  color: #ba1b1d;
+  border-color: #ba1b1d;
+  background: #fff;
+}
+.jp-btn-main.navbar-btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* === Pagination === */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  margin-bottom: 32px;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.pagination button {
+  background: #e63946;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+.pagination button:hover:not(:disabled) {
+  background: #2ecc40;
+  transform: translateY(-1px);
+}
+.pagination button.active {
+  background: #2ecc40;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.pagination-ellipsis {
+  margin: 0 4px;
+  align-self: center;
+}
+
+/* === Responsive === */
+@media (max-width: 1100px) {
+  .dashboard-3col-container {
+    flex-direction: column;
+    height: auto;
   }
   .dashboard-col {
-    min-width: 0;
-    box-sizing: border-box;
-    padding: 32px 18px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    width: 100%;
+    padding: 18px 6vw;
   }
   .dashboard-sidebar {
-    flex: 1;
-    min-width: 300px;
-    border-right: 1.5px solid #e0e0e0;
-    background: transparent;
-    position: relative;
-    padding-top: 56px;
+    border-right: none;
+    border-bottom: 1.5px solid #e0e0e0;
   }
+}
+@media (max-width: 900px) {
   .flashcard-set-list-jp {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 350px);
-    gap: 16px;
-    margin-top: 24px;
-    flex-grow: 1;
-    overflow-y: hidden;
-    padding: 0;
+    grid-template-columns: minmax(0, 350px);
     justify-content: center;
   }
-  .flashcard-set-jp {
-    height: 155px;
-    min-height: 155px; /* Đảm bảo đủ không gian */
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    padding: 16px;
-    background-color: #fdfdfd;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    box-sizing: border-box;
-    overflow: visible; /* Thay vì overflow: hidden */
-    position: relative; /* Đảm bảo position: absolute của set-menu-btn hoạt động */
-  }
-  .flashcard-set-jp.selected {
-    border: 2.5px solid #3b4cca;
-    box-shadow: 0 4px 24px #3b4cca22;
-  }
-  .set-menu-btn {
-    position: absolute;
-    top: 3px;
-    right: 8px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 10; /* Tăng z-index để tránh bị che */
-  }
-  .set-menu-btn span {
-    font-size: 22px;
-    color: #e63946;
-    font-weight: bold;
-    letter-spacing: 1px;
-  }
-  .set-menu {
-    position: absolute;
-    top: 30px;
-    right: 8px;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    box-shadow: 0 4px 16px #e6394633;
-    z-index: 10;
-    min-width: 140px;
-    padding: 4px 0;
-    overflow: hidden;
-  }
-  .set-menu-option {
-    display: block;
-    width: 100%;
-    padding: 10px 16px;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    font-size: 1rem;
-    border-radius: 6px;
-    transition: background 0.18s, color 0.18s;
-  }
-  .set-menu-option:hover {
-    background: #f6f7fb;
-    color: #22223b !important;
-  }
-  .set-menu-option.blue {
-    color: #3b4cca;
-  }
-  .set-menu-option.orange {
-    color: #ff9800;
-  }
-  .set-menu-option.red {
-    color: #e63946;
-  }
-  .set-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-  .set-content h3,
-  .set-content p {
-    margin: 4px 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
-  }
-  .home-header-jp {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    background-color: transparent;
-    padding-bottom: 10px;
-    position: relative;
-    max-width: 100%;
-    margin: 0 auto;
-  }
-  .home-header-jp h2 {
-    font-size: 19px;
-    font-weight: 1000;
-    color: #ff4d6d;
-    line-height: 1.2;
-    margin: 0;
-    position: relative;
-    display: inline-block;
-    white-space: nowrap;
-  }
-  .home-header-jp h2::after {
-    content: "";
-    display: block;
-    width: 50%;
-    height: 3px;
-    background: linear-gradient(90deg, #ff6a88, #ff99ac);
-    margin-top: 6px;
-    border-radius: 4px;
-  }
-  .jp-btn-main {
-    background: #fff;
-    color: #e63946;
-    border: 2px solid #e63946;
-    border-radius: 8px;
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    font-family: inherit;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .jp-btn-main:hover:not(:disabled) {
-    color: #ba1b1d;
-    border-color: #ba1b1d;
-    background: #fff;
-  }
-  .jp-btn-main.navbar-btn-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-  .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 24px;
-    margin-bottom: 50px;
-  }
-  .pagination button {
-    background: #e63946;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    margin: 0 5px;
-    cursor: pointer;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    font-weight: bold;
-  }
-  .pagination button:hover {
-    background: #2ecc40;
-    transform: translateY(-2px);
-  }
-  .pagination button.active {
-    background: rgb(46, 204, 64);
-    color: #fff;
-    border-color: #f69cb1;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  }
-  .pagination button.last-page,
-  .pagination button.prev-page {
-    background: #e63946;
-  }
-  .pagination button.last-page:hover,
-  .pagination button.prev-page:hover {
-    background: rgb(46, 204, 64);
-  }
-  .pagination-ellipsis {
-    margin: 0 4px;
-    align-self: center;
-  }
-  @media (max-width: 900px) {
-    .flashcard-set-list-jp {
-      grid-template-columns: minmax(0, 350px);
-      justify-content: center;
-    }
-  }
-  @media (max-width: 1100px) {
-    .dashboard-3col-container {
-      flex-direction: column;
-      height: auto;
-    }
-    .dashboard-col {
-      min-width: 0;
-      width: 100%;
-      padding: 18px 6vw;
-    }
-    .dashboard-sidebar {
-      border-right: none;
-      border-bottom: 1.5px solid #e0e0e0;
-    }
-  }
-  .set-menu-btn:focus {
-    outline: none;
-  }
+}
