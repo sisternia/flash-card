@@ -20,6 +20,16 @@ const getUserById = (id) => {
   return db.query('SELECT id, email, username, created_at FROM users WHERE id = ?', [id]);
 };
 
+// Lấy thông tin người dùng và số lượng flashcard_sets
+const getUsersWithSetCount = () => {
+  return db.query(`
+    SELECT u.id, u.email, u.username, u.created_at, COUNT(fs.id) as set_count
+    FROM users u
+    LEFT JOIN flashcard_sets fs ON u.id = fs.user_id
+    GROUP BY u.id, u.email, u.username, u.created_at
+  `);
+};
+
 const updateUsername = (id, newUsername) => {
   return db.query('UPDATE users SET username = ? WHERE id = ?', [newUsername, id]);
 };
@@ -37,6 +47,7 @@ module.exports = {
   createUser,
   getUserIdByEmail,
   getUserById,
+  getUsersWithSetCount,
   updateUsername,
   updatePassword,
   getPasswordById,

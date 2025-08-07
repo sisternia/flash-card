@@ -76,6 +76,16 @@ const getProfileById = async (req, res) => {
   }
 };
 
+// Lấy thông tin tất cả người dùng và số lượng flashcard_sets
+const getAllUsersWithSetCount = async (req, res) => {
+  try {
+    const [rows] = await authModel.getUsersWithSetCount();
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ msg: 'DB error', error: err.message });
+  }
+};
+
 const updateUsername = async (req, res) => {
   const { id } = req.params;
   const { newUsername } = req.body;
@@ -114,6 +124,7 @@ module.exports = {
   login,
   checkUser,
   getProfileById,
+  getAllUsersWithSetCount,
   updateUsername,
   updatePassword,
 };

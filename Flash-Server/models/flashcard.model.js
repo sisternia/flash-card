@@ -48,26 +48,6 @@ const deleteFlashcardsBySetId = (setId) => {
   return db.query('DELETE FROM flashcards WHERE set_id = ?', [setId]);
 };
 
-const getRandomQuizBySetId = (setId, limit = 10) => {
-  const sql = `
-    SELECT 
-      f1.id AS flashcard_id,
-      f1.phonetic,
-      f1.back,
-      f1.front AS correct_front,
-      JSON_ARRAYAGG(f2.front) AS choices
-    FROM flashcards f1
-    JOIN (
-      SELECT front FROM flashcards WHERE set_id = ? ORDER BY RAND() LIMIT 4
-    ) f2 ON 1=1
-    WHERE f1.set_id = ?
-    GROUP BY f1.id
-    ORDER BY RAND()
-    LIMIT ?;
-  `;
-  return db.query(sql, [setId, setId, limit]);
-};
-
 module.exports = {
   createSet,
   getSetById,
@@ -79,5 +59,4 @@ module.exports = {
   updateFlashcard,
   deleteFlashcard,
   deleteFlashcardsBySetId,
-  getRandomQuizBySetId
 };

@@ -9,6 +9,7 @@ const Navbar = ({ user, onLogout, onUpdateUser }) => {
   const navigate = useNavigate();
   const isHome = location.pathname === '/home' || location.pathname === '/';
   const isDashboard = location.pathname === '/dashboard';
+  const isQuizUser = location.pathname === '/quiz';
   const [showProfile, setShowProfile] = useState(false);
   const [currentUser, setCurrentUser] = useState(user);
 
@@ -52,7 +53,12 @@ const Navbar = ({ user, onLogout, onUpdateUser }) => {
           >
             Quản lý bộ Flashcard
           </button>
-          <button className="jp-btn-main" onClick={() => navigate('/quiz')} style={{ marginLeft: 8 }}>
+          <button
+            className={`jp-btn-main${isQuizUser ? ' navbar-btn-disabled' : ''}`}
+            onClick={() => !isQuizUser && navigate('/quiz')}
+            disabled={isQuizUser}
+            style={{ marginLeft: 8 }}
+          >
             Ôn tập
           </button>
           {currentUser ? (

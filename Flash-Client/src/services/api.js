@@ -125,3 +125,10 @@ export const deleteSet = async (id) => {
   if (!res.ok) throw new Error(data.msg || 'Lỗi xóa bộ flashcard');
   return data;
 };
+
+export const getAllUsersWithSetCount = async () => {
+  const res = await fetch(`${API_BASE_URL}/auth/users`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.msg || 'Lỗi tải danh sách người dùng');
+  return data;
+};

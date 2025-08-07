@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Quiz from './pages/Quiz';
+import QuizUser from './pages/QuizUser';
 import Register from './pages/Register';
 import SetDetail from './pages/SetDetail';
 import { checkUser } from './services/api';
@@ -90,7 +91,7 @@ function App() {
               <Route path="/login" element={<Login setUser={setUser} />} />
               <Route path="/register" element={<Register />} />
               <Route path="/set/:id" element={<SetDetail />} />
-              <Route path="/quiz" element={<Quiz />} />
+              <Route path="/quiz" element={<QuizUser />} />
               <Route path="/home" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
             </Routes>

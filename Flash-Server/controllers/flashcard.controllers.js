@@ -136,29 +136,6 @@ const deleteSet = async (req, res) => {
   }
 };
 
-const getQuizQuestions = async (req, res) => {
-  const { setId } = req.params;
-  try {
-    const [rows] = await flashcardModel.getRandomQuizBySetId(setId, 10);
-    // Shuffle choices for each question
-    const data = rows.map(row => {
-      const choices = JSON.parse(row.choices);
-      const uniqueChoices = Array.from(new Set([row.correct_front, ...choices])).slice(0, 4);
-      const shuffled = uniqueChoices.sort(() => Math.random() - 0.5);
-      return {
-        id: row.flashcard_id,
-        phonetic: row.phonetic,
-        back: row.back,
-        correct_front: row.correct_front,
-        choices: shuffled
-      };
-    });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ msg: 'DB error', error: err.message });
-  }
-};
-
 module.exports = {
   createSet,
   getSets,
@@ -168,5 +145,4 @@ module.exports = {
   updateFlashcard,
   updateSet,
   deleteSet,
-  getQuizQuestions
 };
