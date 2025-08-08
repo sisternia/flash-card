@@ -91,9 +91,10 @@ function App() {
               <Route path="/login" element={<Login setUser={setUser} />} />
               <Route path="/register" element={<Register />} />
               <Route path="/set/:id" element={<SetDetail />} />
-              <Route path="/quiz" element={<QuizUser />} />
+              <Route path="/quiz" element={<Quiz />} />
               <Route path="/home" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/quiz-user" element={<QuizUser />} />
             </Routes>
           </div>
         </CSSTransition>

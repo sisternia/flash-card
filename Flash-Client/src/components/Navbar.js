@@ -9,7 +9,7 @@ const Navbar = ({ user, onLogout, onUpdateUser }) => {
   const navigate = useNavigate();
   const isHome = location.pathname === '/home' || location.pathname === '/';
   const isDashboard = location.pathname === '/dashboard';
-  const isQuizUser = location.pathname === '/quiz';
+  const isQuizUser = location.pathname === '/quiz-user';
   const [showProfile, setShowProfile] = useState(false);
   const [currentUser, setCurrentUser] = useState(user);
 
@@ -55,7 +55,7 @@ const Navbar = ({ user, onLogout, onUpdateUser }) => {
           </button>
           <button
             className={`jp-btn-main${isQuizUser ? ' navbar-btn-disabled' : ''}`}
-            onClick={() => !isQuizUser && navigate('/quiz')}
+            onClick={() => !isQuizUser && navigate('/quiz-user')}
             disabled={isQuizUser}
             style={{ marginLeft: 8 }}
           >
@@ -88,4 +88,4 @@ const Navbar = ({ user, onLogout, onUpdateUser }) => {
   );
 };
 
-export default Navbar;
+export default Navbar;  

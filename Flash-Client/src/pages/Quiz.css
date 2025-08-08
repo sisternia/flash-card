@@ -277,10 +277,12 @@
   color: #fff;
   border: 2px solid #e63946;
 }
+
 .quiz-finish-jp {
   margin-top: 48px;
   text-align: center;
 }
+
 .quiz-finish-jp h3 {
   color: #2ecc40;
   font-size: 2rem;

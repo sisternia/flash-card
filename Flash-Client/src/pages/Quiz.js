@@ -20,6 +20,7 @@ const Quiz = () => {
   const [result, setResult] = useState({ correct: 0, total: 0, finished: false });
   const [gameStarted, setGameStarted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [error, setError] = useState(null);
   const timerRef = useRef();
   const [currentPage, setCurrentPage] = useState(1);
   const [currentRound, setCurrentRound] = useState(0);
@@ -32,17 +33,32 @@ const Quiz = () => {
 
   useEffect(() => {
     const fetchSets = async () => {
+      // Lấy user_id từ query parameter hoặc từ localStorage
+      const params = new URLSearchParams(location.search);
+      const targetUserId = params.get('user_id');
       const user = JSON.parse(localStorage.getItem('user') || 'null');
-      if (!user?.id) return;
+      const userId = targetUserId || user?.id;
+
+      if (!userId) {
+        setError('Không tìm thấy thông tin người dùng.');
+        return;
+      }
+
       try {
-        const data = await getUserSets(user.id);
-        setSets(data);
+        const data = await getUserSets(userId);
+        if (!data || data.length === 0) {
+          setError('Người dùng này chưa tạo bộ flashcard nào.');
+        } else {
+          setSets(data);
+          setError(null);
+        }
       } catch (error) {
-        console.error('Lỗi tải danh sách bộ thẻ:', error);
+        setError('Lỗi tải danh sách bộ thẻ.');
+        console.error('Error fetching sets:', error);
       }
     };
     fetchSets();
-  }, []);
+  }, [location.search]);
 
   const setupRound = (roundIndex, allFlashcards) => {
     const start = roundIndex * PAIRS_PER_ROUND;
@@ -71,7 +87,8 @@ const Quiz = () => {
         setIncorrectCards([]);
         setupRound(0, data);
       } catch (error) {
-        console.error('Lỗi tải flashcards:', error);
+        setError('Lỗi tải flashcards.');
+        console.error('Error fetching flashcards:', error);
       }
     };
     fetchFlashcards();
@@ -244,34 +261,50 @@ const Quiz = () => {
         {showEmptySetMessage && (
           <div className="confirm-modal-overlay">
             <div className="confirm-modal">
-              <p>This set has no vocabulary to review.</p>
+              <p>Bộ thẻ này không có từ vựng để ôn tập.</p>
               <div className="confirm-modal-buttons">
                 <button onClick={() => setShowEmptySetMessage(false)}>OK</button>
               </div>
             </div>
           </div>
         )}
+        {error && (
+          <div className="confirm-modal-overlay">
+            <div className="confirm-modal">
+              <p>{error}</p>
+              <div className="confirm-modal-buttons">
+                <button onClick={() => navigate('/quiz-user')}>Quay lại</button>
+              </div>
+            </div>
+          </div>
+        )}
         <button
           style={{ position: 'absolute', top: 70, left: 18, zIndex: 10, background: '#fff', border: '2px solid #e63946', borderRadius: 8, padding: '0.4rem 1.1rem', fontWeight: 'bold', cursor: 'pointer' }}
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/quiz-user')}
         >
           ← BACK
         </button>
         <div className="quiz-container-jp">
           <h2>Chọn bộ thẻ để bắt đầu ôn tập</h2>
           <div className="decks-container">
-            {currentDecks.map(set => (
-              <div key={set.id} className="flashcard-set-jp" onClick={() => setSelectedSetId(set.id)}>
-                <h3>{set.title}</h3>
-                <div>{set.description}</div>
-              </div>
-            ))}
+            {sets.length > 0 ? (
+              currentDecks.map(set => (
+                <div key={set.id} className="flashcard-set-jp" onClick={() => setSelectedSetId(set.id)}>
+                  <h3>{set.title}</h3>
+                  <div>{set.description}</div>
+                </div>
+              ))
+            ) : (
+              <p>Không có bộ thẻ nào để hiển thị.</p>
+            )}
           </div>
-          <div className="pagination-jp">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
-              <button key={number} onClick={() => paginate(number)} className={`page-number-jp ${currentPage === number ? 'current-page-jp' : ''}`}>{number}</button>
-            ))}
-          </div>
+          {sets.length > 0 && (
+            <div className="pagination-jp">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                <button key={number} onClick={() => paginate(number)} className={`page-number-jp ${currentPage === number ? 'current-page-jp' : ''}`}>{number}</button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -292,7 +325,7 @@ const Quiz = () => {
       )}
       <button
         style={{ position: 'absolute', top: 70, left: 18, zIndex: 10, background: '#fff', border: '2px solid #e63946', borderRadius: 8, padding: '0.4rem 1.1rem', fontWeight: 'bold', cursor: 'pointer' }}
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/quiz-user')}
       >
         ← BACK
       </button>

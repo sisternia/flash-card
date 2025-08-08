@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './QuizUser.css';
 import { getAllUsersWithSetCount } from '../services/api';
 
 const QuizUser = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -21,6 +23,10 @@ const QuizUser = () => {
     fetchUsers();
   }, []);
 
+  const handleViewDetails = (userId) => {
+    navigate(`/quiz?user_id=${userId}`);
+  };
+
   return (
     <div className="quiz-user-container">
       <h1>Danh sách người dùng đã tạo Flashcard</h1>
@@ -33,7 +39,10 @@ const QuizUser = () => {
                 <h3>{user.username}</h3>
                 <p>Số bộ Flashcard: {user.set_count}</p>
               </div>
-              <button className="jp-btn-main view-details-btn">
+              <button
+                className="jp-btn-main view-details-btn"
+                onClick={() => handleViewDetails(user.id)}
+              >
                 Xem chi tiết
               </button>
             </div>
