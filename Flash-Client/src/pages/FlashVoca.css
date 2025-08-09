@@ -16,12 +16,13 @@
     min-width: 360px;
     background: #ffffff;
     border-right: 1.5px solid #e0e0e0;
-    overflow-y: auto;
+    overflow-y: hidden;
   }
   .vocab-list {
     display: flex;
     flex-direction: column;
     gap: 18px;
+    height: 100%;
   }
   .vocab-item {
     background: #fff;
@@ -101,7 +102,6 @@
     margin-top: 0;
   }
   .vocab-img {
-    height: 96px;
     width: 96px;
     border-radius: 8px;
     margin-left: 18px;
@@ -208,21 +208,4 @@
       border-right: none;
       border-bottom: 1.5px solid #e0e0e0;
     }
-  }
-  .jp-btn-main {
-    background: #fff;
-    color: #e63946;
-    border: 2px solid #e63946;
-    border-radius: 8px;
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    font-family: inherit;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .jp-btn-main:hover:not(:disabled) {
-    color: #ba1b1d;
-    border-color: #ba1b1d;
-    background: #fff;
   }

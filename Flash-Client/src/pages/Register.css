@@ -3,7 +3,7 @@
   border: 2px solid #22223b;
   border-radius: 16px;
   padding: 2.5rem 2rem 2rem 2rem;
-  box-shadow: 0 4px 24px rgba(34,34,59,0.08);
+  box-shadow: 0 4px 24px rgba(34, 34, 59, 0.08);
   min-width: 320px;
   font-family: 'Noto Sans JP', 'Sawarabi Mincho', Arial, sans-serif;
 }
@@ -54,4 +54,4 @@
 
 .register-container-jp button:hover {
   background: #4a4e69;
-} 
+}

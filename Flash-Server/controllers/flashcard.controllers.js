@@ -18,5 +18,6 @@ router.get('/:setId/flashcards', flashcardController.getFlashcards);
 router.post('/:setId/flashcards', upload.any(), flashcardController.addFlashcard);
 router.put('/:setId/flashcards/:flashcardId', upload.any(), flashcardController.updateFlashcard);
 router.delete('/:setId/flashcards/:flashcardId', flashcardController.deleteFlashcard);
+router.get('/users', flashcardController.getAllUsers);
 
 module.exports = router;

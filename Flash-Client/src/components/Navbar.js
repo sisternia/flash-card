@@ -1,15 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import Profile from '../pages/Profile';
+import { getUserProfile } from '../services/api';
 
-const Navbar = ({ user, onLogout }) => {
+const Navbar = ({ user, onLogout, onUpdateUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === '/home' || location.pathname === '/';
   const isDashboard = location.pathname === '/dashboard';
-
   const [showProfile, setShowProfile] = useState(false);
+  const [currentUser, setCurrentUser] = useState(user);
+
+  useEffect(() => {
+    setCurrentUser(user); // Sync with prop changes
+  }, [user]);
+
+  useEffect(() => {
+    if (showProfile) {
+      const fetchUserProfile = async () => {
+        try {
+          const data = await getUserProfile(user.id);
+          setCurrentUser({ ...user, username: data.username });
+          onUpdateUser({ ...user, username: data.username }); // Update parent state
+          localStorage.setItem('user', JSON.stringify({ ...user, username: data.username })); // Update localStorage
+        } catch (err) {
+          console.error('Error fetching user profile:', err);
+        }
+      };
+      fetchUserProfile();
+    }
+  }, [showProfile, user, onUpdateUser]);
 
   return (
     <>
@@ -34,15 +55,15 @@ const Navbar = ({ user, onLogout }) => {
           <button className="jp-btn-main" onClick={() => navigate('/quiz')} style={{ marginLeft: 8 }}>
             Ôn tập
           </button>
-          {user ? (
+          {currentUser ? (
             <>
-              <span
-                className="navbar-user"
+              <button
+                className="jp-btn-main"
                 onClick={() => setShowProfile(true)}
-                style={{ cursor: 'pointer' }}
+                style={{ marginLeft: 8 }}
               >
-                Xin chào, {user.username}
-              </span>
+                Xin chào, {currentUser.username}
+              </button>
               <button onClick={onLogout} className="jp-btn-main" style={{ marginLeft: 8 }}>Đăng xuất</button>
             </>
           ) : (
@@ -53,7 +74,10 @@ const Navbar = ({ user, onLogout }) => {
           )}
         </div>
       </nav>
-      {showProfile && <Profile user={user} onClose={() => setShowProfile(false)} />}
+      {showProfile && <Profile user={currentUser} onClose={() => setShowProfile(false)} onUpdateUser={(updatedUser) => {
+        setCurrentUser(updatedUser);
+        onUpdateUser(updatedUser);
+      }} />}
     </>
   );
 };

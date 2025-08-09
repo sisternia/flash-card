@@ -8,8 +8,11 @@ import Home from './pages/Home';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Quiz from './pages/Quiz';
+import QuizUser from './pages/QuizUser';
 import Register from './pages/Register';
 import SetDetail from './pages/SetDetail';
+import { checkUser } from './services/api';
+
 
 function App() {
   const [user, setUser] = React.useState(() => {
@@ -27,15 +30,16 @@ function App() {
   const prevPath = useRef(location.pathname);
   const nodeRef = useRef(null);
 
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  };
+
   useEffect(() => {
-    const checkUser = async () => {
+    const verifyUser = async () => {
       if (!user || !user.email) return;
       try {
-        const res = await fetch('http://localhost:5000/api/auth/check', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: user.email })
-        });
+        const res = await checkUser(user.email);
         if (!res.ok) throw new Error('User not valid');
       } catch {
         setUser(null);
@@ -43,16 +47,14 @@ function App() {
         navigate('/');
       }
     };
-    checkUser();
-    // eslint-disable-next-line
-  }, []);
+    verifyUser();
+  }, [user, navigate]);
 
   useEffect(() => {
     if (user && location.pathname === '/login' && prevPath.current !== '/login') {
       setShowBackToLoginConfirm(true);
     }
     prevPath.current = location.pathname;
-    // eslint-disable-next-line
   }, [location.pathname, user]);
 
   const handleLogout = () => {
@@ -81,7 +83,7 @@ function App() {
 
   return (
     <>
-      {user && <Navbar user={user} onLogout={handleLogout} />}
+      {user && <Navbar user={user} onLogout={handleLogout} onUpdateUser={updateUser} />}
       <SwitchTransition mode="out-in">
         <CSSTransition key={location.pathname} classNames="slide" timeout={400} nodeRef={nodeRef}>
           <div className="route-wrapper" ref={nodeRef}>
@@ -91,6 +93,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/set/:id" element={<SetDetail />} />
               <Route path="/quiz" element={<Quiz />} />
+              <Route path="/quiz-user" element={<QuizUser />} />
               <Route path="/home" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
@@ -100,12 +103,12 @@ function App() {
 
       {/* Confirm logout */}
       {showLogoutConfirm && (
-        <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.25)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center'}}>
-          <div style={{background:'#fff',borderRadius:16,padding:'2.5rem 2.5rem',boxShadow:'0 8px 32px #e6394633',textAlign:'center'}}>
-            <div style={{fontSize:32,marginBottom:12,color:'#e63946'}}>Bạn có chắc muốn đăng xuất?</div>
-            <div style={{display:'flex',justifyContent:'center',gap:16,marginTop:16}}>
-              <button style={{background:'#e63946',color:'#fff',border:'none',borderRadius:8,padding:'0.6rem 1.5rem',fontWeight:'bold',cursor:'pointer'}} onClick={confirmLogout}>Đăng xuất</button>
-              <button style={{background:'#bfc0c0',color:'#222',border:'none',borderRadius:8,padding:'0.6rem 1.5rem',fontWeight:'bold',cursor:'pointer'}} onClick={cancelLogout}>Huỷ</button>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.25)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: '#fff', borderRadius: 16, padding: '2.5rem 2.5rem', boxShadow: '0 8px 32px #e6394633', textAlign: 'center' }}>
+            <div style={{ fontSize: 32, marginBottom: 12, color: '#e63946' }}>Bạn có chắc muốn đăng xuất?</div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 16 }}>
+              <button style={{ background: '#e63946', color: '#fff', border: 'none', borderRadius: 8, padding: '0.6rem 1.5rem', fontWeight: 'bold', cursor: 'pointer' }} onClick={confirmLogout}>Đăng xuất</button>
+              <button style={{ background: '#bfc0c0', color: '#222', border: 'none', borderRadius: 8, padding: '0.6rem 1.5rem', fontWeight: 'bold', cursor: 'pointer' }} onClick={cancelLogout}>Huỷ</button>
             </div>
           </div>
         </div>
@@ -113,13 +116,13 @@ function App() {
 
       {/* Confirm back to login */}
       {showBackToLoginConfirm && (
-        <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.25)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center'}}>
-          <div style={{background:'#fff',borderRadius:16,padding:'2.5rem 2.5rem',boxShadow:'0 8px 32px #e6394633',textAlign:'center'}}>
-            <div style={{fontSize:22,fontWeight:'bold',marginBottom:8}}>Bạn sẽ thoát ra trang Login nếu quay lại</div>
-            <div style={{color:'#4a4e69',marginBottom:16}}>Bạn có chắc muốn đăng xuất không?</div>
-            <div style={{display:'flex',justifyContent:'center',gap:16}}>
-              <button style={{background:'#e63946',color:'#fff',border:'none',borderRadius:8,padding:'0.6rem 1.5rem',fontWeight:'bold',cursor:'pointer'}} onClick={confirmBackToLogin}>Đăng xuất</button>
-              <button style={{background:'#bfc0c0',color:'#222',border:'none',borderRadius:8,padding:'0.6rem 1.5rem',fontWeight:'bold',cursor:'pointer'}} onClick={cancelBackToLogin}>Huỷ</button>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.25)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: '#fff', borderRadius: 16, padding: '2.5rem 2.5rem', boxShadow: '0 8px 32px #e6394633', textAlign: 'center' }}>
+            <div style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 8 }}>Bạn sẽ thoát ra trang Login nếu quay lại</div>
+            <div style={{ color: '#4a4e69', marginBottom: 16 }}>Bạn có chắc muốn đăng xuất không?</div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 16 }}>
+              <button style={{ background: '#e63946', color: '#fff', border: 'none', borderRadius: 8, padding: '0.6rem 1.5rem', fontWeight: 'bold', cursor: 'pointer' }} onClick={confirmBackToLogin}>Đăng xuất</button>
+              <button style={{ background: '#bfc0c0', color: '#222', border: 'none', borderRadius: 8, padding: '0.6rem 1.5rem', fontWeight: 'bold', cursor: 'pointer' }} onClick={cancelBackToLogin}>Huỷ</button>
             </div>
           </div>
         </div>

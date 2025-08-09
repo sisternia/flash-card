@@ -18,21 +18,19 @@ const Quiz = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
   const timerRef = useRef();
-  const [currentPage, setCurrentPage] = useState(1);
-  const decksPerPage = 4;
 
   // Bước 1: Lấy danh sách bộ thẻ
   useEffect(() => {
     const fetchSets = async () => {
       const user = JSON.parse(localStorage.getItem('user') || 'null');
-      const user_id = user?.id;
+      const user_id = location.state?.userId || user?.id;
       if (!user_id) return;
       const res = await fetch(`http://localhost:5000/api/sets?user_id=${user_id}`);
       const data = await res.json();
       setSets(data);
     };
     fetchSets();
-  }, []);
+  }, [location.state?.userId]);
 
   // Bước 2: Khi chọn bộ thẻ, fetch từ vựng và bắt đầu game
   useEffect(() => {
@@ -65,14 +63,6 @@ const Quiz = () => {
     }, 1000);
     return () => clearInterval(timerRef.current);
   }, [gameStarted, result.finished]);
-
-  const indexOfLastDeck = currentPage * decksPerPage;
-  const indexOfFirstDeck = indexOfLastDeck - decksPerPage;
-  const currentDecks = sets.slice(indexOfFirstDeck, indexOfLastDeck);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const totalPages = Math.ceil(sets.length / decksPerPage);
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   // Xử lý kéo thả
   const handleDragStart = id => setDragId(id);
@@ -121,27 +111,21 @@ const Quiz = () => {
         >
           ← BACK
         </button>
+        <button
+          style={{ position: 'absolute', top: 70, left: 150, zIndex: 10, background: '#fff', border: '2px solid #3b4cca', borderRadius: 8, padding: '0.4rem 1.1rem', fontWeight: 'bold', cursor: 'pointer' }}
+          onClick={() => navigate('/quiz-user')}
+        >
+          View All Users
+        </button>
         <div className="quiz-container-jp">
           <h2>Chọn bộ thẻ để bắt đầu ôn tập</h2>
-          <div className="decks-container">
-            {currentDecks.map(set => (
-              <div key={set.id} className="flashcard-set-jp" onClick={() => setSelectedSetId(set.id)}>
-                <h3>{set.title}</h3>
-                <div>{set.description}</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, marginTop: 32, justifyContent: 'center' }}>
+            {sets.map(set => (
+              <div key={set.id} className="flashcard-set-jp" style={{ minWidth: 220, cursor: 'pointer', border: '2px solid #3b4cca', borderRadius: 16, padding: 18, background: '#fff', boxShadow: '0 2px 8px #3b4cca11' }} onClick={() => setSelectedSetId(set.id)}>
+                <h3 style={{ color: '#3b4cca', marginBottom: 8 }}>{set.title}</h3>
+                <div style={{ color: '#4a4e69', fontSize: 15 }}>{set.description}</div>
               </div>
             ))}
-          </div>
-          <div className="pagination-jp">
-            {pageNumbers.map(number => (
-              <button key={number} onClick={() => paginate(number)} className={`page-number-jp ${currentPage === number ? 'current-page-jp' : ''}`}>
-                {number}
-              </button>
-            ))}
-            {totalPages > 1 && (
-              <button onClick={() => paginate(totalPages)} className="last-page-jp">
-                Last Page
-              </button>
-            )}
           </div>
         </div>
       </div>

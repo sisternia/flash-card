@@ -48,7 +48,22 @@ const deleteFlashcardsBySetId = (setId) => {
   return db.query('DELETE FROM flashcards WHERE set_id = ?', [setId]);
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT u.id, u.username, u.email, COUNT(s.id) AS flashcard_set_count
+      FROM users u
+      LEFT JOIN flashcard_sets s ON u.id = s.user_id
+      GROUP BY u.id, u.username, u.email
+    `);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ msg: 'DB error', error: err.message });
+  }
+};
+
 module.exports = {
+  getAllUsers,
   createSet,
   getSetById,
   getSetsByUserId,

@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './FlashVoca.css';
 import './Home.css';
 import Modals from '../components/Modals';
+import {
+  getFlashcardsBySetId,
+  addFlashcardToSet,
+  deleteFlashcardFromSet,
+  updateFlashcardInSet
+} from '../services/api';
 
 const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabId, learnedStatus, setLearnedStatus }) => {
   const [showAddVocab, setShowAddVocab] = useState(false);
@@ -15,7 +21,7 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
   const [loadingFlashcards, setLoadingFlashcards] = useState(false);
   const [errorFlashcards, setErrorFlashcards] = useState('');
   const [currentVocabPage, setCurrentVocabPage] = useState(1);
-  const [vocabsPerPage] = useState(3);
+  const [vocabsPerPage, setVocabsPerPage] = useState(3);
   const [vocabMenuOpenId, setVocabMenuOpenId] = useState(null);
   const [showEditVocab, setShowEditVocab] = useState(false);
   const [editVocabData, setEditVocabData] = useState(null);
@@ -28,6 +34,25 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
   const [editVocabImage, setEditVocabImage] = useState(null);
   const [vocabImageUrl, setVocabImageUrl] = useState('');
   const [editVocabImageUrl, setEditVocabImageUrl] = useState('');
+  const vocabListRef = useRef(null);
+
+  useEffect(() => {
+    const calculateVocabsPerPage = () => {
+      if (vocabListRef.current) {
+        const containerHeight = vocabListRef.current.clientHeight;
+        const itemHeight = 150; // Approximate height of a vocab item
+        const newVocabsPerPage = Math.floor(containerHeight / itemHeight);
+        setVocabsPerPage(newVocabsPerPage > 0 ? newVocabsPerPage : 1);
+      }
+    };
+
+    calculateVocabsPerPage();
+    window.addEventListener('resize', calculateVocabsPerPage);
+
+    return () => {
+      window.removeEventListener('resize', calculateVocabsPerPage);
+    };
+  }, []);
 
   const indexOfLastVocab = currentVocabPage * vocabsPerPage;
   const indexOfFirstVocab = indexOfLastVocab - vocabsPerPage;
@@ -80,24 +105,29 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
       formData.append('back', vocabBack);
       if (vocabImageUrl) formData.append('image_url', vocabImageUrl);
       if (vocabImage) formData.append('image', vocabImage);
-      const res = await fetch(`http://localhost:5000/api/sets/${addVocabSetId}/flashcards`, {
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.msg || 'Lỗi thêm từ vựng');
+  
+      await addFlashcardToSet(addVocabSetId, formData);
       setShowAddVocab(false);
+  
       if (addVocabSetId === selectedSetId) {
-        const res = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards`);
-        const data = await res.json();
-        if (res.ok) setFlashcards(data);
+        const data = await getFlashcardsBySetId(selectedSetId);
+        setFlashcards(data);
+        setLearnedStatus(prev => {
+          const newStatus = { ...prev };
+          data.forEach(card => {
+            if (!(card.id in newStatus)) {
+              newStatus[card.id] = false;
+            }
+          });
+          return newStatus;
+        });
       }
     } catch (err) {
       setAddVocabError(err.message);
     } finally {
       setAddVocabLoading(false);
     }
-  };
+  };  
 
   useEffect(() => {
     if (!selectedSetId) return;
@@ -105,10 +135,17 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
       setLoadingFlashcards(true);
       setErrorFlashcards('');
       try {
-        const res = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.msg || 'Lỗi tải từ vựng');
+        const data = await getFlashcardsBySetId(selectedSetId);
         setFlashcards(data);
+        setLearnedStatus(prev => {
+          const newStatus = { ...prev };
+          data.forEach(card => {
+            if (!(card.id in newStatus)) {
+              newStatus[card.id] = false;
+            }
+          });
+          return newStatus;
+        });
       } catch (err) {
         setErrorFlashcards(err.message);
       } finally {
@@ -116,7 +153,7 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
       }
     };
     fetchFlashcards();
-  }, [selectedSetId, setFlashcards]);
+  }, [selectedSetId, setFlashcards, setLearnedStatus]);  
 
   const handleToggleLearned = (id) => {
     setLearnedStatus(prev => ({ ...prev, [id]: !prev[id] }));
@@ -150,18 +187,27 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
     setDeleteVocabLoading(true);
     setDeleteVocabError('');
     try {
-      await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards/${deleteVocabId}`, { method: 'DELETE' });
+      await deleteFlashcardFromSet(selectedSetId, deleteVocabId);
       setShowDeleteVocab(false);
       setDeleteVocabId(null);
-      const res = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards`);
-      const data = await res.json();
-      if (res.ok) setFlashcards(data);
+  
+      const data = await getFlashcardsBySetId(selectedSetId);
+      setFlashcards(data);
+      setLearnedStatus(prev => {
+        const newStatus = { ...prev };
+        data.forEach(card => {
+          if (!(card.id in newStatus)) {
+            newStatus[card.id] = false;
+          }
+        });
+        return newStatus;
+      });
     } catch (err) {
       setDeleteVocabError('Lỗi xóa từ vựng');
     } finally {
       setDeleteVocabLoading(false);
     }
-  };
+  };  
 
   const handleEditVocabSubmit = async (e) => {
     e.preventDefault();
@@ -174,21 +220,27 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
       formData.append('back', editVocabData.back);
       if (editVocabImageUrl) formData.append('image_url', editVocabImageUrl);
       if (editVocabImage) formData.append('image', editVocabImage);
-      const res = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards/${editVocabData.id}`, {
-        method: 'PUT',
-        body: formData
-      });
-      if (!res.ok) throw new Error('Lỗi sửa từ vựng');
+  
+      await updateFlashcardInSet(selectedSetId, editVocabData.id, formData);
       setShowEditVocab(false);
-      const res2 = await fetch(`http://localhost:5000/api/sets/${selectedSetId}/flashcards`);
-      const data2 = await res2.json();
-      if (res2.ok) setFlashcards(data2);
+  
+      const data2 = await getFlashcardsBySetId(selectedSetId);
+      setFlashcards(data2);
+      setLearnedStatus(prev => {
+        const newStatus = { ...prev };
+        data2.forEach(card => {
+          if (!(card.id in newStatus)) {
+            newStatus[card.id] = false;
+          }
+        });
+        return newStatus;
+      });
     } catch (err) {
       setEditVocabError('Lỗi sửa từ vựng');
     } finally {
       setEditVocabLoading(false);
     }
-  };
+  };  
 
   const speak = (text, lang = 'ja-JP') => {
     if (!window.speechSynthesis) return;
@@ -213,7 +265,7 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
             </button>
           )}
         </div>
-        <div className="vocab-list">
+        <div className="vocab-list" ref={vocabListRef}>
           {loadingFlashcards ? (
             <div style={{ color: '#888' }}>Đang tải từ vựng...</div>
           ) : errorFlashcards ? (

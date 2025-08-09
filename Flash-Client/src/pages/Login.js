@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
+import { loginUser } from '../services/api';
 
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState('');
@@ -13,12 +14,7 @@ const Login = ({ setUser }) => {
     e.preventDefault();
     setError('');
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
+      const data = await loginUser(email, password);
       if (data.msg === 'Login success') {
         if (setUser && data.user) setUser(data.user);
         localStorage.setItem('user', JSON.stringify(data.user));
