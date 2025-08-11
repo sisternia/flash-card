@@ -23,7 +23,7 @@ html, body {
 .home-header-jp h2 {
   color: #e63946;
   font-weight: bold;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
 }
 
 .jp-btn-main {
@@ -43,13 +43,7 @@ html, body {
   background: #ba1b1d;
 }
 
-.flashcard-set-list-jp {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
-}
+
 
 .flashcard-set-jp {
   background: #fff;

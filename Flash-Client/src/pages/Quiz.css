@@ -14,7 +14,34 @@
   padding: 2.5rem 2rem 2rem 2rem;
   box-shadow: 0 4px 24px rgba(230,57,70,0.08);
   min-width: 340px;
-  max-width: 400px;
+  max-width: 800px;
+  width: 90%;
+  text-align: center;
+  margin: 4rem auto;
+}
+
+.game-frame {
+    max-width: 900px; /* Enlarged frame */
+}
+
+@keyframes sparkle-out {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+    box-shadow: 0 0 20px #ffeb3b, 0 0 30px #ffc107;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.dragdrop-dropzone.disappearing {
+  animation: sparkle-out 0.6s forwards;
 }
 
 .quiz-container-jp h2 {
@@ -23,6 +50,100 @@
   font-weight: bold;
   letter-spacing: 2px;
   text-align: center;
+}
+
+.decks-container {
+  min-height: 300px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-items: center;
+  align-items: center;
+}
+
+.flashcard-set-jp {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.flashcard-set-jp:only-child {
+  grid-column: 1 / -1;
+  width: calc(50% - 10px);
+  justify-self: center;
+}
+
+.pagination-jp {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination-jp button {
+  border: none;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+}
+
+.pagination-jp .page-number-jp {
+  background-color: #e63946;
+  color: white;
+}
+
+.pagination-jp .page-number-jp:hover {
+  background-color: #2ecc40;
+  color: white;
+}
+
+.pagination-jp .last-page-jp {
+  background-color: #e63946;
+  color: white;
+}
+
+.pagination-jp .last-page-jp:hover {
+  background-color: #2ecc40;
+}
+
+.pagination-jp .current-page-jp {
+  background-color: #2ecc40;
+  color: white;
+  font-weight: bold;
+}
+
+.pagination-jp button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #888;
+}
+
+.flashcard-set-jp {
+  min-width: 220px;
+  cursor: pointer;
+  border: 2px solid #3b4cca;
+  border-radius: 16px;
+  padding: 18px;
+  background: #fff;
+  box-shadow: 0 2px 8px #3b4cca11;
+  display: inline-block;
+  margin: 10px;
+  vertical-align: top;
+}
+
+.flashcard-set-jp h3 {
+  color: #3b4cca;
+  margin-bottom: 8px;
+  white-space: nowrap;
+}
+
+.flashcard-set-jp div {
+  color: #4a4e69;
+  font-size: 15px;
+  white-space: nowrap;
 }
 
 .quiz-card-jp {
@@ -62,100 +183,193 @@
 
 .dragdrop-main {
   display: flex;
-  flex-direction: row;
-  gap: 48px;
+  gap: 24px;
   justify-content: center;
   align-items: flex-start;
-  margin-top: 32px;
+  margin-top: 24px;
+  padding: 20px;
+  border: 3px solid #3b4cca;
+  border-radius: 16px;
+  background: #fdfdff;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 320px;
 }
-.dragdrop-pairs {
+
+.dragdrop-pairs, .dragdrop-options {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
+  flex: 1 1 45%;
+  max-width: 45%;
 }
+
 .dragdrop-dropzone {
-  min-width: 180px;
-  min-height: 48px;
+  min-width: 160px;
+  min-height: 44px;
   background: #fff;
-  border: 2.5px dashed #3b4cca;
-  border-radius: 12px;
+  border: 2px dashed #3b4cca;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: #3b4cca;
   position: relative;
   transition: border 0.2s, background 0.2s;
 }
+
+.dragdrop-dropzone.matched {
+  border-color: #2ecc40;
+  background: #eafaf1;
+  color: #222;
+}
+
 .dragdrop-dropzone.correct {
-  border: 2.5px solid #2ecc40;
+  border-color: #2ecc40;
   background: #eafaf1;
 }
+
 .dragdrop-dropzone.wrong {
-  border: 2.5px solid #e63946;
+  border-color: #e63946;
   background: #fff0f0;
+  animation: shake 0.5s;
 }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
 .dragdrop-tick {
   color: #2ecc40;
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-left: 12px;
 }
-.dragdrop-cross {
-  color: #e63946;
-  font-size: 2rem;
-  margin-left: 12px;
-}
+
 .dragdrop-front {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-family: 'Sawarabi Mincho', 'Noto Sans JP', Arial, sans-serif;
 }
+
 .dragdrop-options {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  margin-left: 32px;
+  margin-left: 0;
 }
+
 .dragdrop-option {
   background: #f6f7fb;
   border: 2px solid #3b4cca;
   border-radius: 10px;
-  padding: 12px 28px;
-  font-size: 1.1rem;
+  padding: 10px 24px;
+  font-size: 1rem;
   color: #3b4cca;
   font-weight: bold;
   cursor: grab;
   user-select: none;
   transition: background 0.18s, border 0.18s;
 }
+
 .dragdrop-option:active {
   background: #e63946;
   color: #fff;
   border: 2px solid #e63946;
 }
+
 .quiz-finish-jp {
   margin-top: 48px;
   text-align: center;
 }
+
 .quiz-finish-jp h3 {
   color: #2ecc40;
   font-size: 2rem;
   margin-bottom: 12px;
 }
-@media (max-width: 900px) {
+
+.incorrect-words-container {
+  margin-top: 20px;
+  text-align: left;
+  max-height: 200px; /* Set a fixed height */
+  overflow-y: auto; /* Add a scrollbar if content overflows */
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.incorrect-words-container h4 {
+  color: #e63946;
+  margin-bottom: 10px;
+}
+
+.incorrect-words-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.incorrect-words-container li {
+  background: #fdecec;
+  padding: 8px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.finish-buttons {
+    margin-top: 20px;
+}
+
+.jp-btn-main.review-btn {
+    background-color: #ffc107;
+    margin-right: 10px;
+}
+
+.jp-btn-main.exit-btn {
+    background-color: #6c757d;
+}
+
+.confirm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirm-modal {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.confirm-modal-buttons button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
   .dragdrop-main {
     flex-direction: column;
     gap: 24px;
     align-items: stretch;
   }
+  .dragdrop-pairs, .dragdrop-options {
+    max-width: 100%;
+  }
   .dragdrop-options {
-    margin-left: 0;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 12px;
     justify-content: center;
   }
-  .dragdrop-pairs {
-    align-items: stretch;
-  }
-} 
+}

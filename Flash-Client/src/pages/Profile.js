@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './Profile.css';
+import {
+  getUserProfile,
+  updateUsername,
+  updatePassword
+} from '../services/api';
 
-const Profile = ({ user, onClose }) => {
+const Profile = ({ user, onClose, onUpdateUser }) => {
   const [userData, setUserData] = useState(null);
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -14,56 +19,48 @@ const Profile = ({ user, onClose }) => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/auth/profile/${user.id}`);
-        const data = await response.json();
+        const data = await getUserProfile(user.id);
         setUserData(data);
+        onUpdateUser({ ...user, username: data.username }); // Sync parent state with latest data
       } catch (err) {
         console.error('Error fetching profile:', err);
       }
     };
-
     fetchUserInfo();
-  }, [user.id]);
+  }, [user.id, onUpdateUser]);  
 
   const handleRename = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/update-username/${user.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ newUsername }),
-      });
-      const data = await response.json();
+      const data = await updateUsername(user.id, newUsername);
       setMessage(data.msg);
-      if (response.ok) {
+      if (data.msg?.toLowerCase().includes('thành công')) {
         setShowRenameModal(false);
+        const updatedUser = { ...user, username: newUsername };
         setUserData(prev => ({ ...prev, username: newUsername }));
+        onUpdateUser(updatedUser); // Update parent state
+        localStorage.setItem('user', JSON.stringify(updatedUser)); // Update localStorage
       }
     } catch (err) {
       setMessage('Lỗi kết nối máy chủ');
     }
-  };
+  };  
 
   const handlePasswordChange = async () => {
     if (newPassword !== confirmPassword) {
       setMessage('Mật khẩu mới không khớp');
       return;
     }
-
+  
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/update-password/${user.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ oldPassword, newPassword }),
-      });
-      const data = await response.json();
+      const data = await updatePassword(user.id, oldPassword, newPassword);
       setMessage(data.msg);
-      if (response.ok) {
+      if (data.msg?.toLowerCase().includes('thành công')) {
         setShowPasswordModal(false);
       }
     } catch (err) {
       setMessage('Lỗi kết nối máy chủ');
     }
-  };
+  };  
 
   return (
     <div className="profile-modal">
