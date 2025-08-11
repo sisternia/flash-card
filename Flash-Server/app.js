@@ -16,12 +16,13 @@ const flashcardRoutes = require('./routes/flashcard.routes');
 app.use('/api/auth', authRoutes);
 app.use('/api/sets', flashcardRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   res.send('API is running');
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
