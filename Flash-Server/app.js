@@ -16,7 +16,7 @@ const flashcardRoutes = require('./routes/flashcard.routes');
 app.use('/api/auth', authRoutes);
 app.use('/api/sets', flashcardRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   res.send('API is running');
