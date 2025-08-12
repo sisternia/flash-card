@@ -1,5 +1,5 @@
-const API_BASE_URL = 'http://ec2-13-238-155-110.ap-southeast-2.compute.amazonaws.com:3000/api';
-const BASE_URL = 'http://ec2-13-238-155-110.ap-southeast-2.compute.amazonaws.com:3000';
+const API_BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = 'http://localhost:5000';
 
 export const loginUser = async (email, password) => {
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
