@@ -6,7 +6,8 @@ import {
   getFlashcardsBySetId,
   addFlashcardToSet,
   deleteFlashcardFromSet,
-  updateFlashcardInSet
+  updateFlashcardInSet,
+  getImageUrl
 } from '../services/api';
 
 const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabId, learnedStatus, setLearnedStatus }) => {
@@ -163,7 +164,6 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
     setQuizFromVocabId(card.id);
   };
 
-
   const handleOpenVocabMenu = (id, e) => {
     e.stopPropagation();
     setVocabMenuOpenId(id === vocabMenuOpenId ? null : id);
@@ -299,11 +299,7 @@ const FlashVoca = ({ selectedSetId, setFlashcards, flashcards, setQuizFromVocabI
                   <input type="checkbox" checked={!!learnedStatus[card.id]} onChange={e => { e.stopPropagation(); handleToggleLearned(card.id); }} style={{ accentColor: '#2ecc40', width: 18, height: 18 }} />
                 </div>
                 {(card.image_url) && (
-                  (card.image_url && card.image_url.startsWith('http')) ? (
-                    <img className="vocab-img" src={card.image_url} alt="minh họa" />
-                  ) : card.image_url ? (
-                    <img className="vocab-img" src={`http://localhost:5000${card.image_url}`} alt="minh họa" />
-                  ) : null
+                  <img className="vocab-img" src={getImageUrl(card.image_url)} alt="minh họa" />
                 )}
               </div>
             ))
