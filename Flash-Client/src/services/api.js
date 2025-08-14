@@ -1,5 +1,5 @@
-const API_BASE_URL = 'http://localhost:3000/api';
-const BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = '/api';
+const BASE_URL = 'https://www.nihonflashcard.live';
 
 export const loginUser = async (email, password) => {
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
